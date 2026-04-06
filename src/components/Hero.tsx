@@ -21,7 +21,7 @@ export default function Hero() {
           <p className="hero-description">
             The Los Angeles Concierge Association fosters the education and
             development of its members while maintaining the highest professional
-            and ethical standards — shaping how the world experiences LA.
+            and ethical standards, shaping how the world experiences LA.
           </p>
           <div className="hero-actions">
             <a href="#membership" className="btn-primary">

@@ -64,11 +64,11 @@ export default function WhyPartner() {
             <p>
               LACA sponsors gain direct access to the concierges who shape how
               millions of visitors experience Los Angeles. Our members are the
-              trusted advisors behind every hotel recommendation — from fine
+              trusted advisors behind every hotel recommendation, from fine
               dining and entertainment to tours, wellness, and luxury retail.
             </p>
             <p>
-              A partnership with LACA isn&apos;t just visibility — it&apos;s a
+              A partnership with LACA isn&apos;t just visibility. It&apos;s a
               relationship with the people who put your brand in front of the
               guests who matter most.
             </p>

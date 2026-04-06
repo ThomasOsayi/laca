@@ -6,14 +6,14 @@ export default function About() {
           <div className="section-label">Our Mission</div>
           <span className="gold-divider" />
           <h2 style={{ marginTop: 20 }}>
-            Concierge — The <em>Original</em> Influencer
+            Concierge: The <em>Original</em> Influencer
           </h2>
         </div>
 
         <div className="about-right fade-in">
           <p>
             For decades, the hotel concierge has shaped the way visitors
-            experience Los Angeles — recommending the restaurants people rave
+            experience Los Angeles, recommending the restaurants people rave
             about, the hidden gems they discover, and the experiences they carry
             home as stories. Before social media, before algorithms, the
             concierge was the trusted voice.

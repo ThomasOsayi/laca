@@ -43,7 +43,7 @@ export default function EventsPage() {
         label="Events"
         title="Events &"
         titleEm="Meetings"
-        description="From our signature annual Expo and Trade Show to monthly member gatherings, supper clubs, and social mixers — LACA brings the LA hospitality community together year-round."
+        description="From our signature annual Expo and Trade Show to monthly member gatherings, supper clubs, and social mixers, LACA brings the LA hospitality community together year-round."
         breadcrumb="Events & Meetings"
         bgImage="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1920&h=600&fit=crop"
       />

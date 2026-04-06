@@ -2,25 +2,25 @@ export default function Calendar() {
     const items = [
       {
         month: "Jan",
-        sub: "– Jun",
+        sub: "to Jun",
         title: "Monthly Meetings & Social Mixers",
-        desc: "Regular gatherings at venues across LA — meetings, mixers, and supper clubs",
+        desc: "Regular gatherings at venues across LA, including meetings, mixers, and supper clubs",
       },
       {
         month: "May",
         sub: "15th",
         title: "Membership Renewal Deadline",
-        desc: "Annual dues and applications due — $150 Full · $175 Affiliate · $800 Sponsor",
+        desc: "Annual dues and applications due: $150 Full · $175 Affiliate · $800 Sponsor",
       },
       {
         month: "Aug",
-        sub: "– Sep",
+        sub: "to Sep",
         title: "Annual Expo & Trade Show",
-        desc: "LACA's premier event at the Taglyan Complex — 200–350 attendees, 45–65 vendors",
+        desc: "LACA's premier event at the Taglyan Complex, with 200–350 attendees and 45–65 vendors",
       },
       {
         month: "Oct",
-        sub: "– Nov",
+        sub: "to Nov",
         title: "Board Nominations & Elections",
         desc: "October nominations meeting, November elections by secret ballot",
       },

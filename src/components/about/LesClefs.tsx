@@ -10,7 +10,7 @@ export default function LesClefs() {
             <p>
               Through our affiliation with Les Clefs d&apos;Or USA, LACA members
               gain access to one of the most prestigious professional networks in
-              the global hospitality industry — the international society of hotel
+              the global hospitality industry, the international society of hotel
               concierges.
             </p>
             <p>

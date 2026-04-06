@@ -13,7 +13,7 @@ const Arrow = () => (
             Join the <em>Community</em>
           </h2>
           <p className="contact-cta-desc">
-            Whether you&apos;re a concierge, vendor, or hospitality leader —
+            Whether you&apos;re a concierge, vendor, or hospitality leader,
             there&apos;s a place for you at LACA.
           </p>
           <div className="cta-buttons">

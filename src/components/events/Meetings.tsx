@@ -38,7 +38,7 @@ export default function Meetings() {
       },
       {
         title: "Featured Restaurant of the Month",
-        desc: "A series of 3–4 intimate concierge dinners hosted by one restaurant in a single month — featured across LACA's website and social media for maximum exposure.",
+        desc: "A series of 3–4 intimate concierge dinners hosted by one restaurant in a single month, featured across LACA's website and social media for maximum exposure.",
         tag: "3–4 Events / Month",
         icon: (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -57,7 +57,7 @@ export default function Meetings() {
               Monthly Meetings &amp; <em>Gatherings</em>
             </h2>
             <p>
-              LACA hosts a minimum of eight events per year — from educational
+              LACA hosts a minimum of eight events per year, from educational
               business meetings to exclusive dining experiences across the city.
             </p>
           </div>

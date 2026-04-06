@@ -43,7 +43,7 @@ export default function HotelManagement() {
             </h2>
             <p>
               Investing in your concierge team&apos;s development through LACA
-              membership isn&apos;t just a perk — it&apos;s a strategic advantage
+              membership isn&apos;t just a perk. It&apos;s a strategic advantage
               for your hotel. For a nominal $150 per concierge, you open the door
               to professional growth that directly enhances your guest experience.
             </p>

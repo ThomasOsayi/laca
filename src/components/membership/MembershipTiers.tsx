@@ -70,7 +70,7 @@ const Arrow = () => (
               Choose Your <em>Path</em>
             </h2>
             <p>
-              LACA offers three membership categories — each providing unique
+              LACA offers three membership categories, each providing unique
               access to the LA hospitality community.
             </p>
           </div>

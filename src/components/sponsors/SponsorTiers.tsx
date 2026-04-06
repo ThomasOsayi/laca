@@ -57,7 +57,7 @@ const Arrow = () => (
               Sponsorship <em>Tiers</em>
             </h2>
             <p>
-              Two levels of partnership — each designed to connect your brand with
+              Two levels of partnership, each designed to connect your brand with
               LA&apos;s most influential concierge network.
             </p>
           </div>

@@ -40,7 +40,7 @@ export default function ContactPage() {
         label="Contact"
         title="Get"
         titleEm="Involved"
-        description="Whether you're a concierge professional looking to join, a vendor interested in our events, or a hospitality business seeking partnership — we'd love to hear from you."
+        description="Whether you're a concierge professional looking to join, a vendor interested in our events, or a hospitality business seeking partnership, we'd love to hear from you."
         breadcrumb="Contact / Join"
         bgImage="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1920&h=600&fit=crop"
       />

@@ -18,9 +18,9 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "LACA — Los Angeles Concierge Association",
+  title: "LACA: Los Angeles Concierge Association",
   description:
-    "The Los Angeles Concierge Association fosters the education and development of its members while maintaining the highest professional and ethical standards — shaping how the world experiences LA.",
+    "The Los Angeles Concierge Association fosters the education and development of its members while maintaining the highest professional and ethical standards, shaping how the world experiences LA.",
   keywords: [
     "Los Angeles",
     "concierge",
@@ -32,9 +32,9 @@ export const metadata: Metadata = {
     "expo",
   ],
   openGraph: {
-    title: "LACA — Los Angeles Concierge Association",
+    title: "LACA: Los Angeles Concierge Association",
     description:
-      "In Service Through Friendship — uniting LA's finest hospitality professionals.",
+      "In Service Through Friendship, uniting LA's finest hospitality professionals.",
     url: "https://thelaca.com",
     siteName: "LACA",
     type: "website",

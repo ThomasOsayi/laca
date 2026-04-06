@@ -13,7 +13,7 @@ const Arrow = () => (
             Attend, Host, or <em>Sponsor</em>
           </h2>
           <p className="events-cta-desc">
-            Whether you&apos;re a concierge, venue, or hospitality brand —
+            Whether you&apos;re a concierge, venue, or hospitality brand,
             there&apos;s a place for you at every LACA event.
           </p>
           <div className="cta-buttons">

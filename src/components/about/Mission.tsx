@@ -6,7 +6,7 @@ export default function Mission() {
             <div className="section-label">Our Mission</div>
             <span className="gold-divider" style={{ margin: "16px 0 24px" }} />
             <h2>
-              Concierge — The <em>Original</em> Influencer
+              Concierge: The <em>Original</em> Influencer
             </h2>
   
             <div className="mission-quote">
@@ -17,7 +17,7 @@ export default function Mission() {
                 concierges in the community encouraging service through friendship
                 throughout the concierge profession.&rdquo;
               </p>
-              <cite>— LACA Mission Statement</cite>
+              <cite>LACA Mission Statement</cite>
             </div>
           </div>
   
@@ -32,7 +32,7 @@ export default function Mission() {
             </p>
             <p>
               Before social media, before algorithms, the concierge was the
-              trusted voice — recommending the restaurants people rave about, the
+              trusted voice, recommending the restaurants people rave about, the
               hidden gems they discover, and the experiences they carry home as
               stories. LACA was founded to protect and elevate that legacy.
             </p>

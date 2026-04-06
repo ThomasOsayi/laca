@@ -15,7 +15,7 @@ export default function Expo() {
             LACA Expo &amp; Hospitality <em>Trade Show</em>
           </h2>
           <p>
-            Where hospitality meets opportunity — showcasing the best in dining,
+            Where hospitality meets opportunity, showcasing the best in dining,
             attractions, entertainment, wellness, retail, and experiences.
           </p>
         </div>

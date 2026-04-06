@@ -21,7 +21,7 @@ export default function President() {
               A Message from Our <em>President</em>
             </h2>
             <p>
-              The art of concierge goes beyond basic service — it is about
+              The art of concierge goes beyond basic service. It is about
               intuition, personalization, and the ability to transform ordinary
               moments into extraordinary ones. It is about problem-solving with
               grace, leveraging an extensive network, and curating experiences
@@ -35,7 +35,7 @@ export default function President() {
             </p>
             <p>
               Together, we continue to uphold the values of the Los Angeles
-              Concierge Association — service, professionalism, and camaraderie. I
+              Concierge Association: service, professionalism, and camaraderie. I
               invite you all to participate, learn, and collaborate. Let&apos;s
               take this opportunity to not only enhance our craft but to also
               strengthen the bonds that make our community exceptional.

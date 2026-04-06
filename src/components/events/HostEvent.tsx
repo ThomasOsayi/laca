@@ -57,7 +57,7 @@ export default function HostEvent() {
             <p>
               As a nonprofit, we rely on the generous support of our community to
               host our events. Hosting offers your venue valuable exposure to our
-              concierge members — not just during the event, but also through
+              concierge members, not only during the event but also through
               promotions via our website and social media leading up to it.
             </p>
             <p>

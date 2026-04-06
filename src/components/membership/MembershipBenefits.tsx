@@ -14,7 +14,7 @@ export default function MembershipBenefits() {
       },
       {
         title: "Les Clefs d'Or Pathway",
-        desc: "Access mentorship and scholarship opportunities through our Les Clefs d'Or USA partnership — the gold standard in concierge excellence.",
+        desc: "Access mentorship and scholarship opportunities through our Les Clefs d'Or USA partnership, the gold standard in concierge excellence.",
         icon: (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
@@ -42,7 +42,7 @@ export default function MembershipBenefits() {
       },
       {
         title: "Exclusive Events",
-        desc: "Monthly meetings, social mixers, supper clubs, the Annual Expo, and the Winter Gala — all included with membership.",
+        desc: "Monthly meetings, social mixers, supper clubs, the Annual Expo, and the Winter Gala, all included with membership.",
         icon: (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
             <rect x="3" y="4" width="18" height="18" rx="2" />

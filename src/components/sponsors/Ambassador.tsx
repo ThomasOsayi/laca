@@ -28,7 +28,7 @@ export default function Ambassador() {
             </p>
             <p>
               Whether you&apos;re interested in sponsorship, Expo participation,
-              or hosting a LACA event at your venue — Frank is your first point
+              or hosting a LACA event at your venue, Frank is your first point
               of contact.
             </p>
   
