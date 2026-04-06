@@ -28,10 +28,10 @@ export default function Nav() {
   };
 
   const links = [
-    { label: "Our Mission", href: "/about" },
-    { label: "Expo 2025", href: "/#expo" },
-    { label: "Why Join", href: "/#benefits" },
-    { label: "Membership", href: "/#membership" },
+    { label: "About", href: "/about" },
+    { label: "Events", href: "/events" },
+    { label: "Membership", href: "/membership" },
+    { label: "Sponsors", href: "/sponsors" },
   ];
 
   return (
@@ -58,14 +58,13 @@ export default function Nav() {
                 <Link
                   href={l.href}
                   className={pathname === l.href ? "active" : ""}
-                  onClick={closeMobile}
                 >
                   {l.label}
                 </Link>
               </li>
             ))}
             <li>
-              <Link href="/#contact" className="nav-cta">Get Involved</Link>
+              <Link href="/contact" className="nav-cta">Contact / Join</Link>
             </li>
           </ul>
 
@@ -83,7 +82,7 @@ export default function Nav() {
         {links.map((l) => (
           <Link key={l.href} href={l.href} onClick={closeMobile}>{l.label}</Link>
         ))}
-        <Link href="/#contact" onClick={closeMobile}>Get Involved</Link>
+        <Link href="/contact" onClick={closeMobile}>Contact / Join</Link>
       </div>
     </>
   );

@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
-import PageHero from "@/components/about/PageHero";
+import AboutPageHero from "@/components/about/PageHero";
 import Mission from "@/components/about/Mission";
 import President from "@/components/about/President";
 import Board from "@/components/about/Board";
@@ -38,7 +38,7 @@ export default function AboutPage() {
   return (
     <>
       <Nav />
-      <PageHero />
+      <AboutPageHero />
       <Mission />
       <President />
       <Board />
