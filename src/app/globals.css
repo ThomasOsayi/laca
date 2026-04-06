@@ -2143,6 +2143,54 @@ h1, h2, h3, h4 {
 .contact-cta h2 em { font-style: italic; color: var(--gold-light); }
 .contact-cta-desc { font-size: 16px; color: rgba(255,255,255,0.5); max-width: 500px; margin: 0 auto 36px; font-weight: 300; position: relative; }
 
+/* ===== CONTACT: LAYOUT FIXES ===== */
+.contact-main .contact-main-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 64px !important;
+}
+@media (min-width: 1024px) {
+  .contact-main .contact-main-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 80px !important;
+  }
+}
+
+.contact-main .contact-form {
+  background: var(--white) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-lg) !important;
+  padding: 48px !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.directory .directory-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 20px !important;
+}
+@media (min-width: 768px) {
+  .directory .directory-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+@media (min-width: 1024px) {
+  .directory .directory-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+.quick-links .quick-links-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 20px !important;
+}
+@media (min-width: 768px) {
+  .quick-links .quick-links-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
 /* ===== SCROLL ANIMATIONS ===== */
 @media (prefers-reduced-motion: no-preference) {
   .fade-in {
