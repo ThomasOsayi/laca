@@ -1626,24 +1626,66 @@ h1, h2, h3, h4 {
 
 
 /* =============================================
-   MOBILE RESPONSIVE FIXES
+   MOBILE RESPONSIVE
    =============================================
-   Organized widest → narrowest so rules cascade
-   properly. All hero fixes use !important to
-   beat Tailwind v4 @layer specificity.
+   Widest → narrowest cascade.
+   !important used to beat Tailwind v4 @layer.
    ============================================= */
 
-/* --- Tablets & all phones (max-width: 1023px) --- */
+/* --- Tablet & below (max-width: 1023px) --- */
 @media (max-width: 1023px) {
-  /* Homepage hero: kill min-height on mobile so it doesn't stretch to 100vh */
+  /* Hero: don't force full viewport height on smaller screens */
   .hero {
     min-height: auto !important;
+  }
+
+  /* Hero right column: hide the image/badge, keep stats visible */
+  .hero-img-frame {
+    display: none !important;
+  }
+  .hero-img-badge {
+    display: none !important;
+  }
+
+  /* Stats bar: pull out of absolute positioning, make it a
+     standalone high-contrast bar below the hero text */
+  .hero-right {
+    position: static !important;
+  }
+  .hero-stats-float {
+    position: static !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    background: var(--navy) !important;
+    border: 1.5px solid var(--gold) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.35) !important;
+    padding: 24px 20px !important;
+  }
+  .hero-stat-num {
+    color: var(--gold) !important;
+  }
+  .hero-stat-item:not(:last-child)::after {
+    background: rgba(201, 168, 76, 0.25) !important;
+  }
+  .hero-stat-label {
+    color: rgba(255,255,255,0.55) !important;
+  }
+
+  /* Nav: compact height on mobile */
+  .nav-inner {
+    height: 60px !important;
+  }
+  .hero {
+    padding-top: 60px !important;
   }
 }
 
 /* --- All phones (max-width: 767px) --- */
 @media (max-width: 767px) {
-  /* PAGE HERO (inner pages): tighten the massive padding */
+  /* PAGE HERO (inner pages) */
   .page-hero-content {
     padding: 40px 0 36px !important;
   }
@@ -1663,22 +1705,23 @@ h1, h2, h3, h4 {
     line-height: 1.6 !important;
   }
 
-  /* HOMEPAGE HERO: tighten spacing */
+  /* HOMEPAGE HERO */
   .hero-content {
-    padding: 36px 0 56px !important;
-    gap: 36px !important;
+    padding: 36px 0 24px !important;
+    gap: 28px !important;
   }
   .hero-tagline {
-    margin-bottom: 14px !important;
+    margin-bottom: 16px !important;
+    font-size: 10px !important;
   }
   .hero h1 {
-    font-size: clamp(2rem, 8vw, 2.6rem) !important;
-    margin-bottom: 14px !important;
+    font-size: clamp(2.2rem, 9vw, 2.8rem) !important;
+    margin-bottom: 16px !important;
   }
   .hero-description {
-    font-size: 14.5px !important;
-    margin-bottom: 24px !important;
-    line-height: 1.65 !important;
+    font-size: 14px !important;
+    margin-bottom: 28px !important;
+    line-height: 1.7 !important;
   }
   .hero-actions {
     flex-direction: column !important;
@@ -1687,11 +1730,46 @@ h1, h2, h3, h4 {
   .hero-actions .btn-secondary {
     width: 100% !important;
     justify-content: center !important;
+    padding: 16px 24px !important;
   }
 
-  /* Other mobile fixes */
+  /* Expo cards: horizontal layout on phone */
+  .expo-card {
+    padding: 28px 24px !important;
+    display: flex !important;
+    gap: 20px !important;
+    align-items: flex-start !important;
+  }
+  .expo-card-number {
+    font-size: 34px !important;
+    margin-bottom: 0 !important;
+    min-width: 80px !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Expo venue: tighter padding */
+  .expo-venue {
+    padding: 24px !important;
+    gap: 24px !important;
+  }
+
+  /* Gallery: smaller cards for swipe feel */
+  .gallery-item {
+    width: 240px !important;
+    height: 160px !important;
+  }
+  .gallery {
+    padding: 60px 0 !important;
+  }
+  .gallery-header {
+    margin-bottom: 32px !important;
+  }
+
+  /* Sections that need padding fixes */
   .expo-feature-details { padding: 36px 24px !important; }
   .gala-details { padding: 32px 24px !important; }
+
+  /* Positioned badges: make static on mobile */
   .host-cta {
     position: relative !important;
     bottom: auto !important;
@@ -1717,13 +1795,35 @@ h1, h2, h3, h4 {
     margin-right: auto !important;
     width: fit-content !important;
   }
+
+  /* CTA sections: stack buttons */
+  .cta-actions {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  .cta-actions .btn-primary,
+  .cta-actions .btn-secondary {
+    width: 100% !important;
+    max-width: 320px !important;
+    justify-content: center !important;
+  }
+  .cta-contact {
+    gap: 32px !important;
+  }
+
+  /* Footer: center on mobile */
+  .footer-inner {
+    flex-direction: column !important;
+    text-align: center !important;
+  }
 }
 
 /* --- Small phones (max-width: 480px) --- */
 @media (max-width: 480px) {
   .form-row { grid-template-columns: 1fr !important; }
-  .hero-stats-float { padding: 20px 16px !important; gap: 8px !important; }
+  .hero-stats-float { padding: 20px 12px !important; gap: 6px !important; }
   .hero-stat-num { font-size: 24px !important; }
+  .hero-stat-label { font-size: 8px !important; }
   .cta-buttons { flex-direction: column !important; }
   .cta-buttons .btn-primary,
   .cta-buttons .btn-secondary,
@@ -1740,7 +1840,7 @@ h1, h2, h3, h4 {
   .ambassador-img { width: 220px !important; height: 270px !important; }
   .president-img { width: 220px !important; height: 270px !important; }
 
-  /* Extra tight page hero for tiny screens */
+  /* Extra tight page hero */
   .page-hero-content {
     padding: 32px 0 28px !important;
   }
@@ -1748,9 +1848,12 @@ h1, h2, h3, h4 {
     font-size: 1.75rem !important;
   }
 
-  /* Extra tight homepage hero for tiny screens */
+  /* Extra tight homepage hero */
   .hero-content {
-    padding: 28px 0 48px !important;
+    padding: 28px 0 20px !important;
+  }
+  .hero h1 {
+    font-size: 2rem !important;
   }
 }
 
