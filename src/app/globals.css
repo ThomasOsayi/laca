@@ -77,10 +77,10 @@ h1, h2, h3, h4 {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 32px;
+  padding: 0 32px !important;
 }
-@media (min-width: 768px) { .container { padding: 0 48px; } }
-@media (min-width: 1024px) { .container { padding: 0 64px; } }
+@media (min-width: 768px) { .container { padding: 0 48px !important; } }
+@media (min-width: 1024px) { .container { padding: 0 64px !important; } }
 
 /* ===== REUSABLE ===== */
 .section-label {
@@ -1684,6 +1684,9 @@ h1, h2, h3, h4 {
   }
   .page-hero {
     padding-top: 60px !important;
+  }
+  .mobile-menu {
+    top: 60px !important;
   }
 }
 
