@@ -1634,6 +1634,15 @@ h1, h2, h3, h4 {
 
 /* --- Tablet & below (max-width: 1023px) --- */
 @media (max-width: 1023px) {
+  /* Force side padding on all containers — beats Tailwind v4 universal reset */
+  section .container,
+  div .container,
+  footer .container,
+  nav .container {
+    padding-left: 32px !important;
+    padding-right: 32px !important;
+  }
+
   /* Hero: don't force full viewport height on smaller screens */
   .hero {
     min-height: auto !important;
@@ -1692,47 +1701,11 @@ h1, h2, h3, h4 {
 
 /* --- All phones (max-width: 767px) --- */
 @media (max-width: 767px) {
-  /* Force side padding on mobile — beats Tailwind layer */
-  .hero .container,
-  .about .container,
-  .expo .container,
-  .participate .container,
-  .membership .container,
-  .gallery .container,
-  .cta .container,
-  .page-hero .container,
-  .mission .container,
-  .president .container,
-  .board .container,
-  .ethics .container,
-  .clefs .container,
-  .contact-band .container,
-  .expo-feature .container,
-  .expo-stats .container,
-  .meetings .container,
-  .host-event .container,
-  .gala .container,
-  .calendar .container,
-  .events-cta .container,
-  .tiers .container,
-  .qualifications-section .container,
-  .mem-benefits .container,
-  .how-apply .container,
-  .hotel-mgmt .container,
-  .deadline .container,
-  .mem-cta .container,
-  .why-partner .container,
-  .sponsor-tiers .container,
-  .sponsors-gallery .container,
-  .how-sponsor .container,
-  .ambassador .container,
-  .logos .container,
-  .sponsor-cta .container,
-  .contact-main .container,
-  .directory .container,
-  .quick-links .container,
-  .contact-cta .container,
-  .footer .container {
+  /* Force side padding on all containers — beats Tailwind v4 universal reset */
+  section .container,
+  div .container,
+  footer .container,
+  nav .container {
     padding-left: 32px !important;
     padding-right: 32px !important;
   }
@@ -1785,18 +1758,20 @@ h1, h2, h3, h4 {
     padding: 16px 24px !important;
   }
 
-  /* Expo cards: horizontal layout on phone */
+  /* Expo cards: compact stacked layout on phone */
   .expo-card {
     padding: 28px 24px !important;
-    display: flex !important;
-    gap: 20px !important;
-    align-items: flex-start !important;
+    display: block !important;
   }
   .expo-card-number {
-    font-size: 34px !important;
-    margin-bottom: 0 !important;
-    min-width: 80px !important;
-    flex-shrink: 0 !important;
+    font-size: 36px !important;
+    margin-bottom: 8px !important;
+  }
+  .expo-card h3 {
+    margin-bottom: 6px !important;
+  }
+  .expo-card p {
+    font-size: 13px !important;
   }
 
   /* Expo venue: tighter but not cramped */
