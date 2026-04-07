@@ -15,6 +15,11 @@ export default function Nav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = "";
+    setMobileOpen(false);
+  }, [pathname]);
+
   const closeMobile = () => {
     setMobileOpen(false);
     document.body.style.overflow = "";
