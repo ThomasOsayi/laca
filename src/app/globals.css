@@ -1692,6 +1692,51 @@ h1, h2, h3, h4 {
 
 /* --- All phones (max-width: 767px) --- */
 @media (max-width: 767px) {
+  /* Force side padding on mobile — beats Tailwind layer */
+  .hero .container,
+  .about .container,
+  .expo .container,
+  .participate .container,
+  .membership .container,
+  .gallery .container,
+  .cta .container,
+  .page-hero .container,
+  .mission .container,
+  .president .container,
+  .board .container,
+  .ethics .container,
+  .clefs .container,
+  .contact-band .container,
+  .expo-feature .container,
+  .expo-stats .container,
+  .meetings .container,
+  .host-event .container,
+  .gala .container,
+  .calendar .container,
+  .events-cta .container,
+  .tiers .container,
+  .qualifications-section .container,
+  .mem-benefits .container,
+  .how-apply .container,
+  .hotel-mgmt .container,
+  .deadline .container,
+  .mem-cta .container,
+  .why-partner .container,
+  .sponsor-tiers .container,
+  .sponsors-gallery .container,
+  .how-sponsor .container,
+  .ambassador .container,
+  .logos .container,
+  .sponsor-cta .container,
+  .contact-main .container,
+  .directory .container,
+  .quick-links .container,
+  .contact-cta .container,
+  .footer .container {
+    padding-left: 32px !important;
+    padding-right: 32px !important;
+  }
+
   /* PAGE HERO (inner pages) */
   .page-hero-content {
     padding: 40px 0 36px !important;
