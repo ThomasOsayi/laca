@@ -65,14 +65,16 @@ export default function BoardEditor() {
     );
   };
 
-  const removeMember = (id: string) => {
+  const removeMember = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
     if (confirm("Remove this board member?")) {
       setMembers(members.filter((m) => m.id !== id));
       if (editingId === id) setEditingId(null);
     }
   };
 
-  const moveMember = (index: number, direction: -1 | 1) => {
+  const moveMember = (index: number, direction: -1 | 1, e: React.MouseEvent) => {
+    e.stopPropagation();
     const newIndex = index + direction;
     if (newIndex < 0 || newIndex >= members.length) return;
     const updated = [...members];
@@ -95,25 +97,26 @@ export default function BoardEditor() {
             </span>
           )}
           <button className="btn-save" onClick={save} disabled={saving}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 16, height: 16 }}>
-              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
-              <polyline points="17 21 17 13 7 13 7 21" />
-              <polyline points="7 3 7 8 15 8" />
-            </svg>
             {saving ? "Saving..." : "Save Changes"}
           </button>
         </div>
       </div>
 
-      <div className="admin-card">
-        <div className="admin-card-header">
-          <h3>Current Board (2025-2026)</h3>
-          <span>{members.length} members</span>
+      <div className="card">
+        <div className="card-header">
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <h3>Current Board</h3>
+            <span className="count">{members.length}</span>
+          </div>
         </div>
 
         <div className="member-list">
           {members.map((member, index) => (
-            <div className="member-item" key={member.id}>
+            <div
+              className="member-row"
+              key={member.id}
+              onClick={() => setEditingId(member.id)}
+            >
               <div className="member-avatar">
                 {member.photo ? (
                   <img src={member.photo} alt={member.name} />
@@ -121,46 +124,36 @@ export default function BoardEditor() {
                   member.initials || "?"
                 )}
               </div>
-              <div className="member-info">
-                <span>{member.role || "No role set"}</span>
+              <div className="member-details">
+                <span className="member-role">{member.role || "No role set"}</span>
                 <h4>{member.name || "Unnamed"}</h4>
                 <p>{member.email || member.affiliation || "No details"}</p>
               </div>
-              <div className="member-actions">
+              <div className="member-row-actions">
                 <button
-                  className="btn-icon"
-                  onClick={() => moveMember(index, -1)}
+                  className="btn-icon-sm"
+                  onClick={(e) => moveMember(index, -1, e)}
                   title="Move up"
                 >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 14, height: 14 }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <polyline points="18 15 12 9 6 15" />
                   </svg>
                 </button>
                 <button
-                  className="btn-icon"
-                  onClick={() => moveMember(index, 1)}
+                  className="btn-icon-sm"
+                  onClick={(e) => moveMember(index, 1, e)}
                   title="Move down"
                 >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 14, height: 14 }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <polyline points="6 9 12 15 18 9" />
                   </svg>
                 </button>
                 <button
-                  className="btn-icon"
-                  onClick={() => setEditingId(member.id)}
-                  title="Edit"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 14, height: 14 }}>
-                    <path d="M12 20h9" />
-                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                  </svg>
-                </button>
-                <button
-                  className="btn-icon danger"
-                  onClick={() => removeMember(member.id)}
+                  className="btn-icon-sm danger"
+                  onClick={(e) => removeMember(member.id, e)}
                   title="Remove"
                 >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 14, height: 14 }}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <polyline points="3 6 5 6 21 6" />
                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
                   </svg>
@@ -170,24 +163,34 @@ export default function BoardEditor() {
           ))}
         </div>
 
-        <button className="btn-add" onClick={addMember}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 16, height: 16 }}>
+        <div className="btn-add-row" onClick={addMember}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
           Add Board Member
-        </button>
+        </div>
       </div>
 
+      {/* Edit Modal */}
       <AdminModal
         title="Edit Board Member"
-        subtitle={editing?.name || "New Member"}
+        subtitle={editing ? `Editing: ${editing.name || "New Member"}` : ""}
         open={!!editing}
         onClose={() => setEditingId(null)}
       >
         {editing && (
           <>
-            <div className="field-row">
+            <ImageUpload
+              value={editing.photo}
+              onChange={(url) => updateMember(editing.id, "photo", url)}
+              folder="board"
+              label="Photo"
+              previewStyle="circle"
+              recommendedSize="400x400px"
+            />
+
+            <div className="field-row" style={{ marginTop: 24 }}>
               <div className="field">
                 <label>Full Name</label>
                 <input
@@ -228,7 +231,7 @@ export default function BoardEditor() {
                 />
               </div>
               <div className="field">
-                <label>Affiliation / Hotel</label>
+                <label>Hotel / Affiliation</label>
                 <input
                   type="text"
                   value={editing.affiliation}
@@ -236,22 +239,6 @@ export default function BoardEditor() {
                   placeholder="e.g. Peninsula Beverly Hills"
                 />
               </div>
-            </div>
-
-            <ImageUpload
-              value={editing.photo}
-              onChange={(url) => updateMember(editing.id, "photo", url)}
-              folder="board"
-              previewStyle="circle"
-              label="Photo"
-              recommendedSize="400x400px"
-            />
-
-            <div className="admin-modal-actions">
-              <button className="btn-preview" onClick={() => setEditingId(null)}>Cancel</button>
-              <button className="btn-save" onClick={() => setEditingId(null)}>
-                Save &amp; Close
-              </button>
             </div>
           </>
         )}

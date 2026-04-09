@@ -4,23 +4,6 @@ import { useState, useEffect } from "react";
 import { useSiteDoc, saveSiteDoc } from "@/lib/hooks";
 import AdminModal from "./AdminModal";
 
-const SummaryField = ({ label, value }: { label: string; value: string }) => (
-  <div>
-    <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8B92A0" }}>{label}</span>
-    <p style={{ fontSize: 14, color: "#1A2744", marginTop: 4 }}>{value || "Not set"}</p>
-  </div>
-);
-
-const EditBtn = ({ onClick }: { onClick: () => void }) => (
-  <button className="btn-preview" onClick={onClick}>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 16, height: 16 }}>
-      <path d="M12 20h9" />
-      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-    </svg>
-    Edit
-  </button>
-);
-
 export default function MembershipEditor() {
   const { data, loading } = useSiteDoc("membership");
   const [dues, setDues] = useState({ full: "", affiliate: "", sponsor: "" });
@@ -29,8 +12,9 @@ export default function MembershipEditor() {
   const [qualifications, setQualifications] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [duesModal, setDuesModal] = useState(false);
-  const [qualsModal, setQualsModal] = useState(false);
+
+  const [duesModalOpen, setDuesModalOpen] = useState(false);
+  const [qualsModalOpen, setQualsModalOpen] = useState(false);
 
   useEffect(() => {
     if (!data) return;
@@ -72,52 +56,63 @@ export default function MembershipEditor() {
         <h1>Membership</h1>
         <div className="topbar-actions">
           {saved && (
-            <span style={{ fontSize: 13, color: "#38A169", fontWeight: 500 }}>
-              Saved!
-            </span>
+            <span style={{ fontSize: 13, color: "#38A169", fontWeight: 500 }}>Saved!</span>
           )}
           <button className="btn-save" onClick={save} disabled={saving}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 16, height: 16 }}>
-              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
-              <polyline points="17 21 17 13 7 13 7 21" />
-              <polyline points="7 3 7 8 15 8" />
-            </svg>
             {saving ? "Saving..." : "Save Changes"}
           </button>
         </div>
       </div>
 
       {/* Dues & Deadline Summary */}
-      <div className="admin-card">
-        <div className="admin-card-header">
+      <div className="card">
+        <div className="card-header">
           <h3>Dues &amp; Deadline</h3>
-          <EditBtn onClick={() => setDuesModal(true)} />
+          <button className="btn-edit-sm" onClick={() => setDuesModalOpen(true)}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
+            Edit
+          </button>
         </div>
-        <div style={{ display: "grid", gap: 12 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
-            <SummaryField label="Full Member" value={dues.full} />
-            <SummaryField label="Affiliate" value={dues.affiliate} />
-            <SummaryField label="General Sponsor" value={dues.sponsor} />
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            <SummaryField label="Application Deadline" value={deadline} />
-            <SummaryField label="Deadline Year" value={deadlineYear} />
+        <div className="card-body">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
+            <div style={{ textAlign: "center", padding: 20, background: "#FAF8F3", borderRadius: 8 }}>
+              <div style={{ fontSize: 24, fontWeight: 600, color: "#C9A84C" }}>{dues.full || "$150"}</div>
+              <div style={{ fontSize: 11, color: "#8B92A0", textTransform: "uppercase" as const, letterSpacing: "0.08em", marginTop: 6 }}>Full Member</div>
+            </div>
+            <div style={{ textAlign: "center", padding: 20, background: "#FAF8F3", borderRadius: 8 }}>
+              <div style={{ fontSize: 24, fontWeight: 600, color: "#C9A84C" }}>{dues.affiliate || "$175"}</div>
+              <div style={{ fontSize: 11, color: "#8B92A0", textTransform: "uppercase" as const, letterSpacing: "0.08em", marginTop: 6 }}>Affiliate</div>
+            </div>
+            <div style={{ textAlign: "center", padding: 20, background: "#FAF8F3", borderRadius: 8 }}>
+              <div style={{ fontSize: 24, fontWeight: 600, color: "#C9A84C" }}>{dues.sponsor || "$800"}</div>
+              <div style={{ fontSize: 11, color: "#8B92A0", textTransform: "uppercase" as const, letterSpacing: "0.08em", marginTop: 6 }}>Sponsor</div>
+            </div>
+            <div style={{ textAlign: "center", padding: 20, background: "#FAF8F3", borderRadius: 8 }}>
+              <div style={{ fontSize: 16, fontWeight: 600, color: "#1A2744" }}>{deadline ? deadline.replace(/,?\s*\d{4}$/, "") : "May 15"}</div>
+              <div style={{ fontSize: 11, color: "#8B92A0", textTransform: "uppercase" as const, letterSpacing: "0.08em", marginTop: 6 }}>Deadline {deadlineYear || "2026"}</div>
+            </div>
           </div>
         </div>
       </div>
 
-      <AdminModal title="Edit Dues &amp; Deadline" open={duesModal} onClose={() => setDuesModal(false)}>
+      <AdminModal
+        title="Edit Dues & Deadline"
+        subtitle="Membership pricing and application deadline"
+        open={duesModalOpen}
+        onClose={() => setDuesModalOpen(false)}
+        width={560}
+      >
         <div className="field-row-3">
           <div className="field">
-            <label>Full Member Dues</label>
+            <label>Full Member</label>
             <input type="text" value={dues.full} onChange={(e) => setDues({ ...dues, full: e.target.value })} placeholder="$150" />
           </div>
           <div className="field">
-            <label>Affiliate Dues</label>
+            <label>Affiliate</label>
             <input type="text" value={dues.affiliate} onChange={(e) => setDues({ ...dues, affiliate: e.target.value })} placeholder="$175" />
           </div>
           <div className="field">
-            <label>General Sponsor Dues</label>
+            <label>Sponsor</label>
             <input type="text" value={dues.sponsor} onChange={(e) => setDues({ ...dues, sponsor: e.target.value })} placeholder="$800" />
           </div>
         </div>
@@ -131,31 +126,53 @@ export default function MembershipEditor() {
             <input type="text" value={deadlineYear} onChange={(e) => setDeadlineYear(e.target.value)} placeholder="2026" />
           </div>
         </div>
-        <div className="admin-modal-actions">
-          <button className="btn-preview" onClick={() => setDuesModal(false)}>Cancel</button>
-          <button className="btn-save" onClick={() => setDuesModal(false)}>Save &amp; Close</button>
-        </div>
       </AdminModal>
 
       {/* Qualifications Summary */}
-      <div className="admin-card">
-        <div className="admin-card-header">
-          <h3>Full Member Qualifications</h3>
-          <EditBtn onClick={() => setQualsModal(true)} />
+      <div className="card">
+        <div className="card-header">
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <h3>Full Member Qualifications</h3>
+            <span className="count">{qualifications.length}</span>
+          </div>
+          <button className="btn-edit-sm" onClick={() => setQualsModalOpen(true)}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
+            Edit
+          </button>
         </div>
-        <div style={{ display: "grid", gap: 8 }}>
-          {qualifications.map((qual, i) => (
-            <p key={i} style={{ fontSize: 13, color: "#1A2744", paddingLeft: 12, borderLeft: "2px solid #C9A84C" }}>
-              {qual || <span style={{ color: "#8B92A0" }}>Empty qualification</span>}
-            </p>
-          ))}
-          {qualifications.length === 0 && (
-            <p style={{ fontSize: 13, color: "#8B92A0" }}>No qualifications added yet.</p>
+        <div className="card-body">
+          {qualifications.length === 0 ? (
+            <div className="empty-state">
+              <h4>No qualifications set</h4>
+              <p>Click Edit to add membership qualifications.</p>
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {qualifications.map((qual, i) => (
+                <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+                  <div style={{
+                    width: 24, height: 24, borderRadius: "50%", border: "1.5px solid #C9A84C",
+                    display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1,
+                  }}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" strokeWidth="3" style={{ width: 12, height: 12 }}>
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  </div>
+                  <span style={{ fontSize: 14, color: "#1A2744" }}>{qual}</span>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       </div>
 
-      <AdminModal title="Edit Qualifications" open={qualsModal} onClose={() => setQualsModal(false)}>
+      <AdminModal
+        title="Edit Qualifications"
+        subtitle="Requirements for full membership"
+        open={qualsModalOpen}
+        onClose={() => setQualsModalOpen(false)}
+        width={640}
+      >
         {qualifications.map((qual, index) => (
           <div key={index} style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 16 }}>
             <div className="field" style={{ flex: 1, marginBottom: 0 }}>
@@ -163,12 +180,12 @@ export default function MembershipEditor() {
               <input type="text" value={qual} onChange={(e) => updateQual(index, e.target.value)} />
             </div>
             <button
-              className="btn-icon danger"
+              className="btn-icon-sm danger"
               onClick={() => removeQual(index)}
               style={{ marginTop: 28 }}
               title="Remove"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 14, height: 14 }}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 13, height: 13 }}>
                 <polyline points="3 6 5 6 21 6" />
                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
               </svg>
@@ -182,10 +199,6 @@ export default function MembershipEditor() {
           </svg>
           Add Qualification
         </button>
-        <div className="admin-modal-actions">
-          <button className="btn-preview" onClick={() => setQualsModal(false)}>Cancel</button>
-          <button className="btn-save" onClick={() => setQualsModal(false)}>Save &amp; Close</button>
-        </div>
       </AdminModal>
     </>
   );

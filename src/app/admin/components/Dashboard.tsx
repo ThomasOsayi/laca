@@ -90,7 +90,7 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
     <>
       <div className="topbar">
         <div>
-          <div className="status-badge live">
+          <div className="status-badge">
             <div className="status-dot" />
             Site Live
           </div>

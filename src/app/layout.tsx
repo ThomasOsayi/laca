@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Outfit } from "next/font/google";
+import { SiteDataProvider } from "@/lib/SiteDataContext";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -48,7 +49,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${cormorant.variable} ${outfit.variable}`}>
-      <body>{children}</body>
+      <body>
+        <SiteDataProvider>{children}</SiteDataProvider>
+      </body>
     </html>
   );
 }
