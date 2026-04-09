@@ -1,20 +1,26 @@
 "use client";
 
+import { useSiteData } from "@/lib/SiteDataContext";
+
 const Check = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ width: 10, height: 10, color: "var(--gold)" }}>
     <polyline points="20 6 9 17 4 12" />
   </svg>
 );
 
+const defaultQualifications = [
+  "At least 21 years of age",
+  'Employed by a hotel with the title of "Concierge"',
+  "Work a minimum of 32 hours a week at a lobby concierge desk",
+  "Passed the 90-day probationary period in that position",
+  "Returning members must attend at least 4 LACA meetings per calendar year",
+  "Annual dues: $150 (Full Member) · $175 (Affiliate) · $800 (General Sponsor)",
+];
+
 export default function Membership() {
-  const qualifications = [
-    "At least 21 years of age",
-    'Employed by a hotel with the title of "Concierge"',
-    "Work a minimum of 32 hours a week at a lobby concierge desk",
-    "Passed the 90-day probationary period in that position",
-    "Returning members must attend at least 4 LACA meetings per calendar year",
-    "Annual dues: $150 (Full Member) · $175 (Affiliate) · $800 (General Sponsor)",
-  ];
+  const { membership, contacts } = useSiteData();
+  const qualifications = membership?.qualifications?.length > 0 ? membership!.qualifications : defaultQualifications;
+  const membershipEmail = contacts?.emails?.membership || "membership@thelaca.com";
 
   return (
     <section className="membership" id="membership">
@@ -34,8 +40,8 @@ export default function Membership() {
 
           <div className="qualifications">
             <h4>Membership Qualifications</h4>
-            {qualifications.map((q) => (
-              <div className="qual-item" key={q}>
+            {qualifications.map((q: string, i: number) => (
+              <div className="qual-item" key={i}>
                 <div className="qual-check">
                   <Check />
                 </div>

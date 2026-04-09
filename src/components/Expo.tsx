@@ -1,3 +1,7 @@
+"use client";
+
+import { useSiteData } from "@/lib/SiteDataContext";
+
 const Arrow = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <path d="M5 12h14M12 5l7 7-7 7" />
@@ -5,6 +9,9 @@ const Arrow = () => (
 );
 
 export default function Expo() {
+  const { events, contacts } = useSiteData();
+  const expo = events?.expo;
+
   return (
     <section className="expo" id="expo">
       <div className="container">
@@ -15,8 +22,8 @@ export default function Expo() {
             LACA Expo &amp; Hospitality <em>Trade Show</em>
           </h2>
           <p>
-            Where hospitality meets opportunity, showcasing the best in dining,
-            attractions, entertainment, wellness, retail, and experiences.
+            {expo?.description ||
+              "Where hospitality meets opportunity, showcasing the best in dining, attractions, entertainment, wellness, retail, and experiences."}
           </p>
         </div>
 
@@ -24,17 +31,17 @@ export default function Expo() {
         <div className="expo-grid">
           {[
             {
-              num: "200–350",
+              num: expo?.attendeeCount || "200–350",
               title: "Front-Line Experts",
               desc: "Hospitality professionals from leading LA hotels and resorts attend each year to discover new partnerships.",
             },
             {
-              num: "45–65",
+              num: expo?.vendorCount || "45–65",
               title: "Top-Tier Vendors",
               desc: "A curated vendor list ensures meaningful engagement and quality connections for every participant.",
             },
             {
-              num: "10+",
+              num: expo?.yearsRunning || "10+",
               title: "Years Running",
               desc: "A decade-long tradition of excellence connecting the most influential voices in Southern California hospitality.",
             },
@@ -51,12 +58,12 @@ export default function Expo() {
         <div className="expo-venue fade-in">
           <div className="expo-venue-img">
             <img
-              src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&h=500&fit=crop"
+              src={expo?.image || "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&h=500&fit=crop"}
               alt="Elegant event venue with ambient lighting"
             />
           </div>
           <div className="expo-venue-info">
-            <h3>Taglyan Complex</h3>
+            <h3>{expo?.venue || "Taglyan Complex"}</h3>
             <p>
               Join us at one of Los Angeles&apos; most prestigious event venues for
               an evening of networking, discovery, and industry connection.
@@ -77,12 +84,12 @@ export default function Expo() {
                   <line x1="8" y1="2" x2="8" y2="6" />
                   <line x1="3" y1="10" x2="21" y2="10" />
                 </svg>
-                2025 Date TBA
+                {expo?.year || "2025"} {expo?.date || "Date TBA"}
               </div>
             </div>
             <div style={{ marginTop: 28 }}>
               <a
-                href="mailto:corporateambassador@thelaca.com"
+                href={`mailto:${contacts?.emails?.corporateAmbassador || "corporateambassador@thelaca.com"}`}
                 className="btn-primary"
                 style={{ display: "inline-flex" }}
               >

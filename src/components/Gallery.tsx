@@ -1,12 +1,27 @@
+"use client";
+
+import { useSiteData } from "@/lib/SiteDataContext";
+
+const defaultImages = [
+  { src: "photo-1580655653885-65763b2597d0", alt: "Los Angeles cityscape at sunset" },
+  { src: "photo-1566073771259-6a8506099945", alt: "Luxury hotel pool with palm trees" },
+  { src: "photo-1414235077428-338989a2e8c0", alt: "Fine dining restaurant table setting" },
+  { src: "photo-1540541338287-41700207dee6", alt: "Beverly Hills palm tree lined street" },
+  { src: "photo-1571896349842-33c89424de2d", alt: "Hotel lobby with elegant lighting" },
+  { src: "photo-1506929562872-bb421503ef21", alt: "Malibu beach at golden hour" },
+];
+
 export default function Gallery() {
-  const images = [
-    { src: "photo-1580655653885-65763b2597d0", alt: "Los Angeles cityscape at sunset" },
-    { src: "photo-1566073771259-6a8506099945", alt: "Luxury hotel pool with palm trees" },
-    { src: "photo-1414235077428-338989a2e8c0", alt: "Fine dining restaurant table setting" },
-    { src: "photo-1540541338287-41700207dee6", alt: "Beverly Hills palm tree lined street" },
-    { src: "photo-1571896349842-33c89424de2d", alt: "Hotel lobby with elegant lighting" },
-    { src: "photo-1506929562872-bb421503ef21", alt: "Malibu beach at golden hour" },
-  ];
+  const { sponsors } = useSiteData();
+  const hasGalleryImages = sponsors?.galleryImages?.length > 0;
+
+  const images = hasGalleryImages
+    ? sponsors!.galleryImages.map((img: { id: string; url: string; alt: string }) => ({
+        src: img.url,
+        alt: img.alt || "Gallery image",
+        isFullUrl: true,
+      }))
+    : defaultImages.map((img) => ({ ...img, isFullUrl: false }));
 
   /* duplicate for seamless loop */
   const allImages = [...images, ...images];
@@ -21,10 +36,10 @@ export default function Gallery() {
       </div>
 
       <div className="gallery-scroll">
-        {allImages.map((img, i) => (
+        {allImages.map((img: { src: string; alt: string; isFullUrl: boolean }, i: number) => (
           <div className="gallery-item" key={`${img.src}-${i}`}>
             <img
-              src={`https://images.unsplash.com/${img.src}?w=640&h=440&fit=crop`}
+              src={img.isFullUrl ? img.src : `https://images.unsplash.com/${img.src}?w=640&h=440&fit=crop`}
               alt={img.alt}
             />
           </div>
