@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSiteDoc, saveSiteDoc } from "@/lib/hooks";
+import ImageUpload from "./ImageUpload";
 
 interface SponsorLogo {
   id: string;
@@ -109,73 +110,40 @@ export default function SponsorsEditor() {
               border: "1px solid rgba(26,39,68,0.08)",
               borderRadius: 8,
               marginBottom: 16,
-              display: "flex",
-              gap: 16,
-              alignItems: "flex-start",
             }}
           >
-            {/* Preview */}
-            <div
-              style={{
-                width: 80,
-                height: 60,
-                background: "white",
-                border: "1px solid rgba(26,39,68,0.08)",
-                borderRadius: 6,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-                overflow: "hidden",
-              }}
-            >
-              {logo.url ? (
-                <img
-                  src={logo.url}
-                  alt={logo.name}
-                  style={{ maxWidth: "90%", maxHeight: 48, objectFit: "contain" }}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+              <div className="field" style={{ flex: 1, marginBottom: 0 }}>
+                <label>Sponsor Name</label>
+                <input
+                  type="text"
+                  value={logo.name}
+                  onChange={(e) => updateLogo(logo.id, "name", e.target.value)}
+                  placeholder="Company name"
                 />
-              ) : (
-                <span style={{ fontSize: 10, color: "#8B92A0", fontWeight: 600 }}>
-                  NO IMG
-                </span>
-              )}
-            </div>
-
-            <div style={{ flex: 1 }}>
-              <div className="field-row">
-                <div className="field" style={{ marginBottom: 0 }}>
-                  <label>Sponsor Name</label>
-                  <input
-                    type="text"
-                    value={logo.name}
-                    onChange={(e) => updateLogo(logo.id, "name", e.target.value)}
-                    placeholder="Company name"
-                  />
-                </div>
-                <div className="field" style={{ marginBottom: 0 }}>
-                  <label>Logo URL</label>
-                  <input
-                    type="text"
-                    value={logo.url}
-                    onChange={(e) => updateLogo(logo.id, "url", e.target.value)}
-                    placeholder="https://..."
-                  />
-                </div>
               </div>
+              <button
+                className="btn-icon danger"
+                onClick={() => removeLogo(logo.id)}
+                style={{ marginTop: 24, marginLeft: 12 }}
+                title="Remove"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 14, height: 14 }}>
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+              </button>
             </div>
-
-            <button
-              className="btn-icon danger"
-              onClick={() => removeLogo(logo.id)}
-              style={{ marginTop: 24 }}
-              title="Remove"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 14, height: 14 }}>
-                <polyline points="3 6 5 6 21 6" />
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-              </svg>
-            </button>
+            <ImageUpload
+              value={logo.url}
+              onChange={(url) => updateLogo(logo.id, "url", url)}
+              folder="sponsors/logos"
+              previewStyle="rectangle"
+              previewWidth={100}
+              previewHeight={60}
+              label="Logo"
+              recommendedSize="300x200px"
+            />
           </div>
         ))}
 
@@ -210,73 +178,40 @@ export default function SponsorsEditor() {
               border: "1px solid rgba(26,39,68,0.08)",
               borderRadius: 8,
               marginBottom: 16,
-              display: "flex",
-              gap: 16,
-              alignItems: "flex-start",
             }}
           >
-            {/* Preview */}
-            <div
-              style={{
-                width: 100,
-                height: 68,
-                background: "white",
-                border: "1px solid rgba(26,39,68,0.08)",
-                borderRadius: 6,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-                overflow: "hidden",
-              }}
-            >
-              {img.url ? (
-                <img
-                  src={img.url}
-                  alt={img.alt}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+              <div className="field" style={{ flex: 1, marginBottom: 0 }}>
+                <label>Alt Text</label>
+                <input
+                  type="text"
+                  value={img.alt}
+                  onChange={(e) => updateGalleryImage(img.id, "alt", e.target.value)}
+                  placeholder="Describe the image"
                 />
-              ) : (
-                <span style={{ fontSize: 10, color: "#8B92A0", fontWeight: 600 }}>
-                  NO IMG
-                </span>
-              )}
-            </div>
-
-            <div style={{ flex: 1 }}>
-              <div className="field-row">
-                <div className="field" style={{ marginBottom: 0 }}>
-                  <label>Image URL</label>
-                  <input
-                    type="text"
-                    value={img.url}
-                    onChange={(e) => updateGalleryImage(img.id, "url", e.target.value)}
-                    placeholder="https://..."
-                  />
-                </div>
-                <div className="field" style={{ marginBottom: 0 }}>
-                  <label>Alt Text</label>
-                  <input
-                    type="text"
-                    value={img.alt}
-                    onChange={(e) => updateGalleryImage(img.id, "alt", e.target.value)}
-                    placeholder="Describe the image"
-                  />
-                </div>
               </div>
+              <button
+                className="btn-icon danger"
+                onClick={() => removeGalleryImage(img.id)}
+                style={{ marginTop: 24, marginLeft: 12 }}
+                title="Remove"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 14, height: 14 }}>
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+              </button>
             </div>
-
-            <button
-              className="btn-icon danger"
-              onClick={() => removeGalleryImage(img.id)}
-              style={{ marginTop: 24 }}
-              title="Remove"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 14, height: 14 }}>
-                <polyline points="3 6 5 6 21 6" />
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-              </svg>
-            </button>
+            <ImageUpload
+              value={img.url}
+              onChange={(url) => updateGalleryImage(img.id, "url", url)}
+              folder="sponsors/gallery"
+              previewStyle="rectangle"
+              previewWidth={120}
+              previewHeight={80}
+              label="Image"
+              recommendedSize="640x440px"
+            />
           </div>
         ))}
 

@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useSiteDoc, saveSiteDoc } from "@/lib/hooks";
+import AdminModal from "./AdminModal";
+import ImageUpload from "./ImageUpload";
 
 interface BoardMember {
   id: string;
@@ -145,7 +147,7 @@ export default function BoardEditor() {
                 </button>
                 <button
                   className="btn-icon"
-                  onClick={() => setEditingId(editingId === member.id ? null : member.id)}
+                  onClick={() => setEditingId(member.id)}
                   title="Edit"
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 14, height: 14 }}>
@@ -177,103 +179,83 @@ export default function BoardEditor() {
         </button>
       </div>
 
-      {editing && (
-        <div className="admin-card">
-          <div className="admin-card-header">
-            <h3>Edit Member</h3>
-            <span>Editing: {editing.name || "New Member"}</span>
-          </div>
+      <AdminModal
+        title="Edit Board Member"
+        subtitle={editing?.name || "New Member"}
+        open={!!editing}
+        onClose={() => setEditingId(null)}
+      >
+        {editing && (
+          <>
+            <div className="field-row">
+              <div className="field">
+                <label>Full Name</label>
+                <input
+                  type="text"
+                  value={editing.name}
+                  onChange={(e) => updateMember(editing.id, "name", e.target.value)}
+                  placeholder="Full name"
+                />
+              </div>
+              <div className="field">
+                <label>Role / Title</label>
+                <select
+                  value={editing.role}
+                  onChange={(e) => updateMember(editing.id, "role", e.target.value)}
+                >
+                  <option value="">Select role</option>
+                  <option>President</option>
+                  <option>Vice President</option>
+                  <option>Secretary</option>
+                  <option>Treasurer</option>
+                  <option>Director of Membership</option>
+                  <option>Corporate Ambassador</option>
+                  <option>Public Relations</option>
+                  <option>Public Relations Co-Chair</option>
+                  <option>Les Clefs d&apos;Or Liaison</option>
+                </select>
+              </div>
+            </div>
 
-          <div className="field-row">
-            <div className="field">
-              <label>Full Name</label>
-              <input
-                type="text"
-                value={editing.name}
-                onChange={(e) => updateMember(editing.id, "name", e.target.value)}
-                placeholder="Full name"
-              />
+            <div className="field-row">
+              <div className="field">
+                <label>Email</label>
+                <input
+                  type="email"
+                  value={editing.email}
+                  onChange={(e) => updateMember(editing.id, "email", e.target.value)}
+                  placeholder="email@thelaca.com"
+                />
+              </div>
+              <div className="field">
+                <label>Affiliation / Hotel</label>
+                <input
+                  type="text"
+                  value={editing.affiliation}
+                  onChange={(e) => updateMember(editing.id, "affiliation", e.target.value)}
+                  placeholder="e.g. Peninsula Beverly Hills"
+                />
+              </div>
             </div>
-            <div className="field">
-              <label>Role / Title</label>
-              <select
-                value={editing.role}
-                onChange={(e) => updateMember(editing.id, "role", e.target.value)}
-              >
-                <option value="">Select role</option>
-                <option>President</option>
-                <option>Vice President</option>
-                <option>Secretary</option>
-                <option>Treasurer</option>
-                <option>Director of Membership</option>
-                <option>Corporate Ambassador</option>
-                <option>Public Relations</option>
-                <option>Public Relations Co-Chair</option>
-                <option>Les Clefs d&apos;Or Liaison</option>
-              </select>
-            </div>
-          </div>
 
-          <div className="field-row">
-            <div className="field">
-              <label>Email</label>
-              <input
-                type="email"
-                value={editing.email}
-                onChange={(e) => updateMember(editing.id, "email", e.target.value)}
-                placeholder="email@thelaca.com"
-              />
-            </div>
-            <div className="field">
-              <label>Affiliation / Hotel</label>
-              <input
-                type="text"
-                value={editing.affiliation}
-                onChange={(e) => updateMember(editing.id, "affiliation", e.target.value)}
-                placeholder="e.g. Peninsula Beverly Hills"
-              />
-            </div>
-          </div>
-
-          <div className="field">
-            <label>Photo URL</label>
-            <input
-              type="text"
+            <ImageUpload
               value={editing.photo}
-              onChange={(e) => updateMember(editing.id, "photo", e.target.value)}
-              placeholder="https://..."
+              onChange={(url) => updateMember(editing.id, "photo", url)}
+              folder="board"
+              previewStyle="circle"
+              label="Photo"
+              recommendedSize="400x400px"
             />
-            <div className="field-hint">
-              Paste an image URL or leave blank to show initials
-            </div>
-          </div>
 
-          {editing.photo && (
-            <div style={{ marginTop: 12 }}>
-              <img
-                src={editing.photo}
-                alt="Preview"
-                style={{
-                  width: 80,
-                  height: 80,
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                  border: "1px solid rgba(26,39,68,0.08)",
-                }}
-              />
+            <div className="admin-modal-actions">
+              <button className="btn-preview" onClick={() => setEditingId(null)}>Cancel</button>
+              <button className="btn-save" onClick={() => setEditingId(null)}>
+                Save &amp; Close
+              </button>
             </div>
-          )}
-
-          <div style={{ marginTop: 20 }}>
-            <button
-              className="btn-preview"
-              onClick={() => setEditingId(null)}
-            >
-              Done Editing
-            </button>
-          </div>
-        </div>
-      )}
+          </>
+        )}
+      </AdminModal>
     </>
   );
 }
