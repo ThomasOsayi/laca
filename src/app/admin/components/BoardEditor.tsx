@@ -83,6 +83,20 @@ export default function BoardEditor() {
   };
 
   const editing = members.find((m) => m.id === editingId);
+  const membersWithPhotos = members.filter((m) => m.photo).length;
+  const photoPercent = members.length > 0 ? Math.round((membersWithPhotos / members.length) * 100) : 0;
+  const allPhotos = membersWithPhotos === members.length && members.length > 0;
+
+  const isIncomplete = (m: BoardMember) => {
+    const isPlaceholder = m.name.includes("Board ") || m.name === "Unnamed" || !m.name;
+    return isPlaceholder && !m.email && !m.photo;
+  };
+
+  const getStatus = (m: BoardMember): { label: string; type: "complete" | "missing" } => {
+    if (isIncomplete(m)) return { label: "Incomplete", type: "missing" };
+    if (!m.photo) return { label: "No Photo", type: "missing" };
+    return { label: "Complete", type: "complete" };
+  };
 
   if (loading) return <div style={{ padding: 40, color: "#8B92A0" }}>Loading...</div>;
 
@@ -92,13 +106,52 @@ export default function BoardEditor() {
         <h1>Board Members</h1>
         <div className="topbar-actions">
           {saved && (
-            <span style={{ fontSize: 13, color: "#38A169", fontWeight: 500 }}>
-              Saved!
-            </span>
+            <span style={{ fontSize: 13, color: "#38A169", fontWeight: 500 }}>Saved!</span>
           )}
           <button className="btn-save" onClick={save} disabled={saving}>
             {saving ? "Saving..." : "Save Changes"}
           </button>
+        </div>
+      </div>
+
+      {/* Photo completion bar */}
+      <div style={{
+        background: "white", border: "1px solid rgba(26,39,68,0.08)",
+        borderRadius: 12, padding: "20px 24px", marginBottom: 24,
+        display: "flex", alignItems: "center", gap: 20,
+      }}>
+        <div style={{
+          width: 40, height: 40, borderRadius: "50%", background: "#F5ECD5",
+          display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+        }}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" strokeWidth="1.5" style={{ width: 18, height: 18 }}>
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <polyline points="21 15 16 10 5 21" />
+          </svg>
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 13, fontWeight: 600, color: "#1A2744", marginBottom: 4 }}>Photo Completion</div>
+          <div style={{ fontSize: 12, color: "#8B92A0" }}>
+            {membersWithPhotos} of {members.length} board members have photos uploaded
+          </div>
+        </div>
+        <div style={{
+          width: 200, height: 6, background: "#FAF8F3",
+          borderRadius: 3, overflow: "hidden",
+        }}>
+          <div style={{
+            height: "100%", borderRadius: 3,
+            width: `${photoPercent}%`,
+            background: allPhotos ? "#38A169" : "#D69E2E",
+            transition: "width 0.3s ease",
+          }} />
+        </div>
+        <div style={{
+          fontSize: 14, fontWeight: 600, whiteSpace: "nowrap",
+          color: allPhotos ? "#38A169" : "#D69E2E",
+        }}>
+          {membersWithPhotos} / {members.length}
         </div>
       </div>
 
@@ -108,59 +161,72 @@ export default function BoardEditor() {
             <h3>Current Board</h3>
             <span className="count">{members.length}</span>
           </div>
+          <span style={{ fontSize: 12, color: "#8B92A0" }}>Click any member to edit</span>
         </div>
 
         <div className="member-list">
-          {members.map((member, index) => (
-            <div
-              className="member-row"
-              key={member.id}
-              onClick={() => setEditingId(member.id)}
-            >
-              <div className="member-avatar">
-                {member.photo ? (
-                  <img src={member.photo} alt={member.name} />
-                ) : (
-                  member.initials || "?"
-                )}
-              </div>
-              <div className="member-details">
-                <span className="member-role">{member.role || "No role set"}</span>
-                <h4>{member.name || "Unnamed"}</h4>
-                <p>{member.email || member.affiliation || "No details"}</p>
-              </div>
-              <div className="member-row-actions">
-                <button
-                  className="btn-icon-sm"
-                  onClick={(e) => moveMember(index, -1, e)}
-                  title="Move up"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <polyline points="18 15 12 9 6 15" />
+          {members.map((member, index) => {
+            const status = getStatus(member);
+            const incomplete = isIncomplete(member);
+            return (
+              <div
+                className="member-row"
+                key={member.id}
+                onClick={() => setEditingId(member.id)}
+                style={incomplete ? { background: "rgba(214,158,46,0.03)" } : undefined}
+                onMouseEnter={(e) => { e.currentTarget.style.background = incomplete ? "rgba(214,158,46,0.06)" : "#FAF8F3"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = incomplete ? "rgba(214,158,46,0.03)" : "transparent"; }}
+              >
+                <div className="member-avatar" style={member.photo ? { border: "2px solid #F5ECD5" } : undefined}>
+                  {member.photo ? (
+                    <img src={member.photo} alt={member.name} />
+                  ) : (
+                    member.initials || "?"
+                  )}
+                </div>
+                <div className="member-details">
+                  <span className="member-role">{member.role || "No role set"}</span>
+                  <h4>{member.name || "Unnamed"}</h4>
+                  {incomplete ? (
+                    <p style={{ color: "#D69E2E", fontStyle: "italic" }}>⚠ Needs name, email, and photo</p>
+                  ) : (
+                    <p>{member.email || member.affiliation || "No details"}</p>
+                  )}
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginRight: 12 }}>
+                  <span style={{
+                    fontSize: 10, fontWeight: 600, letterSpacing: "0.06em",
+                    textTransform: "uppercase" as const,
+                    padding: "3px 10px", borderRadius: 100, whiteSpace: "nowrap",
+                    background: status.type === "complete" ? "#F0FFF4" : "#FFFBEB",
+                    color: status.type === "complete" ? "#38A169" : "#D69E2E",
+                  }}>
+                    {status.label}
+                  </span>
+                </div>
+                <div className="member-row-actions">
+                  <button className="btn-icon-sm" onClick={(e) => moveMember(index, -1, e)} title="Move up">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="18 15 12 9 6 15" /></svg>
+                  </button>
+                  <button className="btn-icon-sm" onClick={(e) => moveMember(index, 1, e)} title="Move down">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9" /></svg>
+                  </button>
+                  <button className="btn-icon-sm danger" onClick={(e) => removeMember(member.id, e)} title="Remove">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polyline points="3 6 5 6 21 6" />
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                    </svg>
+                  </button>
+                </div>
+                {/* Hover arrow */}
+                <div style={{ opacity: 0, transition: "all 0.15s ease", color: "#C9A84C", marginLeft: 4 }} className="member-arrow-hint">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 16, height: 16 }}>
+                    <path d="M5 12h14M12 5l7 7-7 7" />
                   </svg>
-                </button>
-                <button
-                  className="btn-icon-sm"
-                  onClick={(e) => moveMember(index, 1, e)}
-                  title="Move down"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
-                </button>
-                <button
-                  className="btn-icon-sm danger"
-                  onClick={(e) => removeMember(member.id, e)}
-                  title="Remove"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <polyline points="3 6 5 6 21 6" />
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                  </svg>
-                </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="btn-add-row" onClick={addMember}>
@@ -178,66 +244,78 @@ export default function BoardEditor() {
         subtitle={editing ? `Editing: ${editing.name || "New Member"}` : ""}
         open={!!editing}
         onClose={() => setEditingId(null)}
+        onSave={save}
       >
         {editing && (
           <>
-            <ImageUpload
-              value={editing.photo}
-              onChange={(url) => updateMember(editing.id, "photo", url)}
-              folder="board"
-              label="Photo"
-              previewStyle="circle"
-              recommendedSize="400x400px"
-            />
-
-            <div className="field-row" style={{ marginTop: 24 }}>
-              <div className="field">
-                <label>Full Name</label>
-                <input
-                  type="text"
-                  value={editing.name}
-                  onChange={(e) => updateMember(editing.id, "name", e.target.value)}
-                  placeholder="Full name"
-                />
+            {/* Photo */}
+            <div style={{ padding: 20, background: "#FAF8F3", borderRadius: 8, marginBottom: 24 }}>
+              <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" as const, color: "#C9A84C", marginBottom: 16 }}>
+                Photo
               </div>
-              <div className="field">
-                <label>Role / Title</label>
-                <select
-                  value={editing.role}
-                  onChange={(e) => updateMember(editing.id, "role", e.target.value)}
-                >
-                  <option value="">Select role</option>
-                  <option>President</option>
-                  <option>Vice President</option>
-                  <option>Secretary</option>
-                  <option>Treasurer</option>
-                  <option>Director of Membership</option>
-                  <option>Corporate Ambassador</option>
-                  <option>Public Relations</option>
-                  <option>Public Relations Co-Chair</option>
-                  <option>Les Clefs d&apos;Or Liaison</option>
-                </select>
-              </div>
+              <ImageUpload
+                value={editing.photo}
+                onChange={(url) => updateMember(editing.id, "photo", url)}
+                folder="board"
+                label=""
+                previewStyle="circle"
+                recommendedSize="400x400px"
+              />
             </div>
 
-            <div className="field-row">
-              <div className="field">
-                <label>Email</label>
-                <input
-                  type="email"
-                  value={editing.email}
-                  onChange={(e) => updateMember(editing.id, "email", e.target.value)}
-                  placeholder="email@thelaca.com"
-                />
+            {/* Member Details */}
+            <div style={{ padding: 20, background: "#FAF8F3", borderRadius: 8, marginBottom: 24 }}>
+              <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase" as const, color: "#C9A84C", marginBottom: 16 }}>
+                Member Details
               </div>
-              <div className="field">
-                <label>Hotel / Affiliation</label>
-                <input
-                  type="text"
-                  value={editing.affiliation}
-                  onChange={(e) => updateMember(editing.id, "affiliation", e.target.value)}
-                  placeholder="e.g. Peninsula Beverly Hills"
-                />
+              <div className="field-row">
+                <div className="field">
+                  <label>Full Name</label>
+                  <input
+                    type="text"
+                    value={editing.name}
+                    onChange={(e) => updateMember(editing.id, "name", e.target.value)}
+                    placeholder="Full name"
+                  />
+                </div>
+                <div className="field">
+                  <label>Role / Title</label>
+                  <select
+                    value={editing.role}
+                    onChange={(e) => updateMember(editing.id, "role", e.target.value)}
+                  >
+                    <option value="">Select role</option>
+                    <option>President</option>
+                    <option>Vice President</option>
+                    <option>Secretary</option>
+                    <option>Treasurer</option>
+                    <option>Director of Membership</option>
+                    <option>Corporate Ambassador</option>
+                    <option>Public Relations</option>
+                    <option>Public Relations Co-Chair</option>
+                    <option>Les Clefs d&apos;Or Liaison</option>
+                  </select>
+                </div>
+              </div>
+              <div className="field-row">
+                <div className="field" style={{ marginBottom: 0 }}>
+                  <label>Email</label>
+                  <input
+                    type="email"
+                    value={editing.email}
+                    onChange={(e) => updateMember(editing.id, "email", e.target.value)}
+                    placeholder="email@thelaca.com"
+                  />
+                </div>
+                <div className="field" style={{ marginBottom: 0 }}>
+                  <label>Hotel / Affiliation</label>
+                  <input
+                    type="text"
+                    value={editing.affiliation}
+                    onChange={(e) => updateMember(editing.id, "affiliation", e.target.value)}
+                    placeholder="e.g. Peninsula Beverly Hills"
+                  />
+                </div>
               </div>
             </div>
           </>

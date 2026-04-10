@@ -146,6 +146,7 @@ async function seed() {
         tag: "3–4 Events / Month",
       },
     ],
+    specialEvents: [],
   });
   console.log("  ✓ Events");
 

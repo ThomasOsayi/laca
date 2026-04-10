@@ -9,6 +9,7 @@ import ExpoStats from "@/components/events/ExpoStats";
 import Meetings from "@/components/events/Meetings";
 import HostEvent from "@/components/events/HostEvent";
 import WinterGala from "@/components/events/WinterGala";
+import SpecialEvents from "@/components/events/SpecialEvents";
 import Calendar from "@/components/events/Calendar";
 import EventsCTA from "@/components/events/EventsCTA";
 
@@ -52,6 +53,7 @@ export default function EventsPage() {
       <Meetings />
       <HostEvent />
       <WinterGala />
+      <SpecialEvents />
       <Calendar />
       <EventsCTA />
       <Footer />
