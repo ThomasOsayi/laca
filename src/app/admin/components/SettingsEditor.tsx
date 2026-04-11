@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSiteDoc, saveSiteDoc } from "@/lib/hooks";
 
-export default function SettingsEditor() {
+export default function SettingsEditor({ onLogout }: { onLogout: () => void }) {
   const { data, loading } = useSiteDoc("settings");
   const { data: sponsorsData } = useSiteDoc("sponsors");
   const sponsorLogoCount = Array.isArray(sponsorsData?.logos) ? sponsorsData.logos.length : 0;
@@ -49,7 +49,7 @@ export default function SettingsEditor() {
 
   const handleLogout = () => {
     sessionStorage.removeItem("laca-admin");
-    window.location.reload();
+    onLogout();
   };
 
   // Toggle card component
