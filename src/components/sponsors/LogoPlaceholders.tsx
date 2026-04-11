@@ -2,12 +2,24 @@
 
 import { useSiteData } from "@/lib/SiteDataContext";
 
+interface SponsorLogo {
+  id: string;
+  name: string;
+  url: string;
+}
+
 export default function LogoPlaceholders() {
-  const { sponsors, settings } = useSiteData();
+  const { sponsors, settings, loading } = useSiteData();
 
   if (settings?.showSponsorLogos === false) return null;
 
-  const hasLogos = sponsors?.logos?.length > 0;
+  const logos: SponsorLogo[] = Array.isArray(sponsors?.logos) ? sponsors.logos : [];
+  const hasLogos = logos.length > 0;
+
+  // Debug — remove after confirming
+  if (typeof window !== "undefined") {
+    console.log("[LogoPlaceholders]", { loading, sponsors, logos, hasLogos });
+  }
 
   return (
     <section className="logos">
@@ -23,10 +35,14 @@ export default function LogoPlaceholders() {
         </p>
         <div className="logos-grid">
           {hasLogos
-            ? sponsors!.logos.map((logo: { id: string; name: string; url: string }) => (
+            ? logos.map((logo) => (
                 <div className="logo-placeholder" key={logo.id}>
                   {logo.url ? (
-                    <img src={logo.url} alt={logo.name} style={{ maxWidth: "100%", maxHeight: "100%" }} />
+                    <img
+                      src={logo.url}
+                      alt={logo.name}
+                      style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+                    />
                   ) : (
                     <span>{logo.name}</span>
                   )}

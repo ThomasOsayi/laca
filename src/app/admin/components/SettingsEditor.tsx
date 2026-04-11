@@ -5,6 +5,8 @@ import { useSiteDoc, saveSiteDoc } from "@/lib/hooks";
 
 export default function SettingsEditor() {
   const { data, loading } = useSiteDoc("settings");
+  const { data: sponsorsData } = useSiteDoc("sponsors");
+  const sponsorLogoCount = Array.isArray(sponsorsData?.logos) ? sponsorsData.logos.length : 0;
   const [adminPassword, setAdminPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -180,13 +182,12 @@ export default function SettingsEditor() {
               Sponsors Page
             </div>
             <ToggleCard
-              icon={<svg viewBox="0 0 24 24" fill="none" stroke={showSponsorLogos ? "#C9A84C" : "#D69E2E"} strokeWidth="1.5" style={{ width: 16, height: 16 }}><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>}
+              icon={<svg viewBox="0 0 24 24" fill="none" stroke="#C9A84C" strokeWidth="1.5" style={{ width: 16, height: 16 }}><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>}
               title="Show Sponsor Logos"
               desc="Display the logo grid on the Sponsors page"
               checked={showSponsorLogos}
               onChange={() => setShowSponsorLogos(!showSponsorLogos)}
-              disabled={!showSponsorLogos}
-              warning={!showSponsorLogos ? "No sponsor logos uploaded yet. Add logos in the Sponsors tab first." : undefined}
+              warning={sponsorLogoCount === 0 ? "No sponsor logos uploaded yet. Add logos in the Sponsors tab first." : undefined}
             />
           </div>
         </div>

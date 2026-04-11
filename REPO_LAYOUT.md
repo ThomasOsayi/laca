@@ -21,177 +21,168 @@ laca/
 ├── README.md                     # Default create-next-app boilerplate
 ├── REPO_LAYOUT.md
 ├── public/
-│   ├── file.svg, globe.svg, next.svg, vercel.svg, window.svg
-│   └── (default Next.js static SVGs)
+│   └── file.svg, globe.svg, next.svg, vercel.svg, window.svg
 └── src/
     ├── app/
     │   ├── favicon.ico
-    │   ├── globals.css           # Design system + marketing + admin UI (~2 118 lines)
-    │   ├── layout.tsx            # Fonts, metadata, wraps body with SiteDataProvider
+    │   ├── globals.css           # ~2 150 lines: design tokens, marketing, admin, special-events, mobile overrides
+    │   ├── layout.tsx            # Fonts, metadata/OG, SiteDataProvider wraps body
     │   ├── page.tsx              # Home
     │   ├── about/page.tsx
     │   ├── contact/page.tsx
-    │   ├── events/page.tsx
+    │   ├── events/page.tsx       # Includes SpecialEvents between WinterGala and Calendar
     │   ├── membership/page.tsx
     │   ├── sponsors/page.tsx
     │   └── admin/
-    │       ├── page.tsx          # Admin shell: login, sidebar, tab routing
+    │       ├── page.tsx          # Login gate, sidebar nav, tab panels
     │       └── components/
     │           ├── AdminLogin.tsx
-    │           ├── AdminModal.tsx
-    │           ├── Dashboard.tsx
-    │           ├── BoardEditor.tsx
-    │           ├── EventsEditor.tsx      # larger: expo / gala / meetings / calendar-style data
+    │           ├── AdminModal.tsx    # Overlay, Esc to close, Save & Close runs onSave + onClose
+    │           ├── Dashboard.tsx     # Welcome, “Needs Attention”, shortcut cards, Preview Site
+    │           ├── BoardEditor.tsx   # members CRUD; edit modal: grouped Photo + Member Details
+    │           ├── EventsEditor.tsx  # Tabs: Expo, Winter Gala, Monthly Meetings, Special Events
     │           ├── MembershipEditor.tsx
-    │           ├── SponsorsEditor.tsx    # logos + gallery images
+    │           ├── SponsorsEditor.tsx
     │           ├── ContactsEditor.tsx
-    │           ├── SiteEditor.tsx        # hero, president, mission, copyright
-    │           ├── SettingsEditor.tsx    # feature toggles + admin password + logout
-    │           └── ImageUpload.tsx       # Firebase Storage uploads
-    ├── components/               # Public sections; most merge Firestore via useSiteData + fallbacks
-    │   ├── Nav.tsx, Footer.tsx
-    │   ├── Hero.tsx, About.tsx, Expo.tsx, Benefits.tsx, Membership.tsx, Gallery.tsx, CTA.tsx
+    │           ├── SiteEditor.tsx    # Hero / president / mission / copyright (large editor)
+    │           ├── SettingsEditor.tsx # Section visibility toggles, admin password, logout
+    │           └── ImageUpload.tsx   # Storage upload; optional empty label (section title outside)
+    ├── components/
+    │   ├── Nav.tsx, Footer.tsx, Hero, About, Expo, Benefits, Membership, Gallery, CTA
     │   ├── about/, contact/, events/, membership/, sponsors/, shared/
+    │   └── events/SpecialEvents.tsx  # Renders events.specialEvents from Firestore; hidden if empty
     └── lib/
-        ├── firebase.ts           # init app, export db + storage (env-based config)
-        ├── hooks.ts              # useSiteDoc, fetchSiteDoc, saveSiteDoc
-        ├── SiteDataContext.tsx   # SiteDataProvider + useSiteData (7 Firestore listeners)
-        └── seed.ts               # One-off Firestore seed (run with tsx); embeds web config in file
+        ├── firebase.ts
+        ├── hooks.ts                # useSiteDoc, fetchSiteDoc, saveSiteDoc
+        ├── SiteDataContext.tsx     # SiteDataProvider + useSiteData (7 × onSnapshot on site/*)
+        └── seed.ts                 # Seeds all site docs including specialEvents: []
 ```
 
 ---
 
 ## Tech stack
 
-| Piece | Detail |
+| Layer | Detail |
 |--------|--------|
-| App | Next.js 16.2.2, App Router under `src/app/` |
+| App | Next.js 16.2.2, App Router (`src/app/`) |
 | UI | React 19.2.4, TypeScript 5 |
-| Styling | Tailwind v4 (`@tailwindcss/postcss`) + `globals.css` |
-| Fonts | Cormorant Garamond + Outfit via `next/font/google` in `layout.tsx` |
-| Images | `next.config.ts` allows `next/image` (if used) from **images.unsplash.com** via `remotePatterns` |
-| Firebase | `firebase` ^12.11 — Firestore (`db`) and Storage (`storage`) |
-| Tooling | ESLint 9 + `eslint-config-next`; **tsx** (devDep) to run `seed.ts` |
+| Styling | Tailwind v4 (`@tailwindcss/postcss`) + monolithic `globals.css` |
+| Fonts | Cormorant Garamond + Outfit via `next/font/google` |
+| Images | `next.config.ts` — `remotePatterns` for `images.unsplash.com` |
+| Backend | Firebase 12 — Firestore + Storage; web config via `NEXT_PUBLIC_*` |
+| Tooling | ESLint + `eslint-config-next`; **tsx** to run `src/lib/seed.ts` |
 
 ---
 
-## Root layout (`src/app/layout.tsx`)
+## Root layout
 
-- Sets HTML `lang`, font CSS variables, imports `globals.css`, exports static **metadata** and **Open Graph** for LACA / thelaca.com.
-- Wraps all pages in **`SiteDataProvider`** so the public site and admin share the same real-time Firestore subscriptions for `site/*` documents (admin also uses `useSiteDoc` per screen).
+`layout.tsx` sets `lang`, font CSS variables, global CSS, static **metadata** and **Open Graph** (thelaca.com), and wraps **`SiteDataProvider`** around `{children}` so every route receives live `site/*` snapshots.
 
 ---
 
 ## Firebase (`src/lib/firebase.ts`)
 
-- Single app instance via `getApps()` / `initializeApp` to avoid duplicate-app errors in dev HMR.
-- Config from `NEXT_PUBLIC_FIREBASE_*` env vars (apiKey, authDomain, projectId, storageBucket, messagingSenderId, appId, measurementId).
-- Exports: `db` (Firestore), `storage` (Firebase Storage), default `app`.
+Single app instance (`getApps` / `initializeApp`). Exports **`db`**, **`storage`**, default **`app`**. Config from environment variables only in app code.
 
 ---
 
-## Firestore data model (`site` collection)
+## Firestore — `site` collection
 
-Each document id is a fixed slug; admin UIs and public components expect these shapes (see `seed.ts` for defaults).
+| Document | Contents (high level) |
+|----------|------------------------|
+| **`board`** | `members[]`: `id`, `name`, `role`, `email`, `affiliation`, `photo` URL, `initials` |
+| **`events`** | `expo`, `gala`, `meetings[]`, **`specialEvents[]`** — each special event: `id`, `title`, `date`, `time`, `venue`, `description`, `image` |
+| **`membership`** | `dues`, `deadline`, `deadlineYear`, `qualifications[]` |
+| **`sponsors`** | `logos[]`, `galleryImages[]` (URLs) |
+| **`contacts`** | `emails`, `socials`, `address`, `website` |
+| **`content`** | `hero`, `president`, `mission`, `copyrightYear` |
+| **`settings`** | `showExpo`, `showGala`, `showDeadlineBanner`, `showSponsorLogos`, `adminPassword` |
 
-| Document | Purpose |
-|----------|---------|
-| `site/board` | `members[]` — id, name, role, email, affiliation, photo URL, initials |
-| `site/events` | `expo` (name, year, venue, date, time, description, attendee/vendor/year counts, image), `gala` (name, description, image), `meetings[]` (id, title, description, tag) |
-| `site/membership` | `dues` (full, affiliate, sponsor), `deadline`, `deadlineYear`, `qualifications[]` |
-| `site/sponsors` | `logos[]`, `galleryImages[]` (URLs for sponsor strip / home gallery) |
-| `site/contacts` | `emails` (membership, corporateAmbassador, publicRelations, president, lesClefs), `socials`, `address`, `website` |
-| `site/content` | `hero` (tagline, title lines, description, stats[], badge, image), `president` (name, title, photo, paragraphs[], signature), `mission` (heading, quote, paragraphs[]), `copyrightYear` |
-| `site/settings` | `showExpo`, `showGala`, `showDeadlineBanner`, `showSponsorLogos`; `adminPassword` (plaintext string used for `/admin` login gate) |
-
-**Seeding:** `npx tsx src/lib/seed.ts` (not an npm script). `seed.ts` embeds Firebase web config in source for the CLI—treat as sensitive; prefer env-driven tooling for production.
+**Seed:** `npx tsx src/lib/seed.ts` writes defaults including **`specialEvents: []`**. `seed.ts` embeds a Firebase web config for the CLI — treat as sensitive.
 
 ---
 
-## Public site ↔ CMS (`SiteDataContext`)
+## Public site and CMS
 
-- **`SiteDataProvider`** (client): seven parallel `onSnapshot` listeners on `site/board`, `events`, `membership`, `sponsors`, `contacts`, `content`, `settings`. Sets `loading` to false after each doc has received at least one snapshot (initial batch).
-- **`useSiteData()`** exposes those seven blobs plus `loading`. **No marketing component currently branches on `loading`**; they use optional chaining and **inline fallbacks** when fields are missing, so the first paint may match defaults until Firestore data arrives.
+**`SiteDataProvider`** listens to all seven documents; **`useSiteData()`** returns `{ board, events, membership, sponsors, contacts, content, settings, loading }`. Most public sections merge Firestore with **hardcoded fallbacks**; few components read **`loading`**.
 
-**Components using `useSiteData()`:** `Hero`, `About`, `Expo`, `Board`, `Mission`, `President`, `ContactBand`, `Footer`, `CTA`, `Gallery`, `Membership`, `ExpoFeature`, `ExpoStats`, `Meetings`, `HostEvent`, `WinterGala`, `Calendar`, `EventsCTA`, `MembershipTiers`, `Qualifications`, `MembershipBenefits`, `HowToApply`, `HotelManagement`, `DeadlineBanner`, `MembershipCTA`, `WhyPartner`, `SponsorTiers`, `SponsorsGallery`, `HowToSponsor`, `Ambassador`, `LogoPlaceholders`, `SponsorCTA`, `ContactMain`, `Directory`, `QuickLinks`, `ContactCTA`.
+**`useSiteData()` consumers** include: `Hero`, `About`, `Expo`, `Board`, `Mission`, `President`, `ContactBand`, `Footer`, `CTA`, `Gallery`, `Membership`, all major **`events/*`** blocks (`ExpoFeature`, `ExpoStats`, `Meetings`, `HostEvent`, `WinterGala`, **`SpecialEvents`**, `Calendar`, `EventsCTA`), membership and sponsor blocks, and contact blocks.
 
-**Still static (examples):** `Benefits`, `Ethics`, `LesClefs`, `Nav` (hardcoded nav and logo).
+**`SpecialEvents`** — reads **`events.specialEvents`**; renders a titled grid (`.special-events`, `.se-card`, date badge, venue/time row). Returns **`null`** when the array is empty.
 
----
-
-## Admin (`/admin`)
-
-- **Route:** `src/app/admin/page.tsx` — client-only shell.
-- **Auth:** Password compared on the client to `settings.adminPassword` from Firestore (fallback `"laca2025admin"` while settings load). Success → `sessionStorage.setItem("laca-admin", "true")`. **Not** Firebase Authentication.
-- **UX:** Full-screen loading until `settings` doc is read; sidebar sections Overview / Content / Settings; link to open live site in a new tab.
-- **Persistence:** Editors use `useSiteDoc` / `saveSiteDoc` from `hooks.ts` (`setDoc` with `{ merge: true }`).
-
-### Admin components (summary)
-
-| File | Role |
-|------|------|
-| `AdminLogin.tsx` | Branded login, show/hide password, Enter to submit |
-| `Dashboard.tsx` | Shortcut cards into editors; live counts where applicable |
-| `BoardEditor.tsx` | Board `members` list + `ImageUpload` for photos |
-| `EventsEditor.tsx` | Expo, gala, meetings (richer form surface) |
-| `MembershipEditor.tsx` | Dues, deadline fields, qualifications |
-| `SponsorsEditor.tsx` | Sponsor logos list, gallery images |
-| `ContactsEditor.tsx` | Department emails, social URLs, address blocks, website |
-| `SiteEditor.tsx` | Hero, president’s letter, mission copy, copyright year; modals for editing; saves full `content` document |
-| `SettingsEditor.tsx` | Save toggles (expo / gala / deadline banner / sponsor logos), rotate admin password (min 8 chars), logout |
-| `AdminModal.tsx` | Reusable overlay; locks `body` scroll while open |
-| `ImageUpload.tsx` | Upload to Storage (`uploadBytes` + `getDownloadURL`); max **5 MB**, images only; object path `folder/timestamp-sanitizedname` |
-
----
-
-## `src/lib/hooks.ts`
-
-- **`useSiteDoc(docId)`** — `onSnapshot` on `site/{docId}` for admin panels.
-- **`fetchSiteDoc(docId)`** — one-time `getDoc`.
-- **`saveSiteDoc(docId, data)`** — `setDoc(..., { merge: true })`.
+**Still static (examples):** `Benefits`, `Ethics`, `LesClefs`, **`Nav`** (links, logo, mobile menu; **`useEffect` on `pathname`** closes mobile menu and clears body overflow).
 
 ---
 
 ## Public routes
 
-| Route | Composition |
-|-------|-------------|
-| `/` | Nav → Hero, About, Expo, Benefits, Membership, Gallery, CTA, Footer; home uses `IntersectionObserver` on `.fade-in` when motion allowed |
-| `/about` | Nav → about `PageHero`, Mission, President, Board, Ethics, LesClefs, ContactBand, Footer |
-| `/events` | Nav → shared `PageHero`, Expo/Gala/Meetings/Host/Winter/Calendar/Events CTA, Footer |
-| `/membership` | Nav → `PageHero`, tiers, qualifications, benefits, how to apply, hotel section, deadline, CTA, Footer |
-| `/sponsors` | Nav → `PageHero`, partner value, tiers, gallery, how to sponsor, ambassador, logos, CTA, Footer |
-| `/contact` | Nav → `PageHero`, ContactMain, Directory, QuickLinks, ContactCTA, Footer |
+| Route | Sections (order) |
+|-------|-------------------|
+| `/` | Nav → Hero, About, Expo, Benefits, Membership, Gallery, CTA, Footer + fade-in observer |
+| `/about` | Nav → about PageHero, Mission, President, Board, Ethics, LesClefs, ContactBand, Footer |
+| `/events` | Nav → PageHero → ExpoFeature, ExpoStats, Meetings, HostEvent, WinterGala, **SpecialEvents**, Calendar, EventsCTA, Footer |
+| `/membership` | Nav → PageHero → tiers, qualifications, benefits, how to apply, hotel, deadline, CTA, Footer |
+| `/sponsors` | Nav → PageHero → partner story, tiers, gallery, how to sponsor, ambassador, logos, CTA, Footer |
+| `/contact` | Nav → PageHero → ContactMain, Directory, QuickLinks, ContactCTA, Footer |
 
-Inner pages: scroll-to-top on mount + same fade-in observer pattern as home where used.
-
-**Shared `PageHero`:** `src/components/shared/PageHero.tsx` — breadcrumb (Home → current), label, title + emphasized span, description, optional `bgImage` (Unsplash URLs on several routes). About wraps it in `components/about/PageHero.tsx`.
+Shared **`PageHero`**: breadcrumb, label, title + `<em>`, description, optional `bgImage`. About uses **`about/PageHero`** as a thin wrapper.
 
 ---
 
-## Forms on the marketing site
+## Admin (`/admin`)
 
-`Membership.tsx` (home) and `ContactMain.tsx` (contact) are **UI-only** inquiry forms: no `action`, API route, email integration, or server action.
+- **Auth:** Client compares password to **`settings.adminPassword`** (fallback while loading); **`sessionStorage`** flag **`laca-admin`**. Not Firebase Auth.
+- **Shell:** `admin/page.tsx` — loads settings first, then login or sidebar + main panel. **NAV_ITEMS**: Dashboard, Board, Events, Membership, Sponsors, Contacts, Site Content, Settings.
+- **Data:** Editors use **`useSiteDoc`** / **`saveSiteDoc`** (`setDoc` with `{ merge: true }`).
+
+### Editors (behavioral notes)
+
+| Component | Role |
+|-----------|------|
+| **Dashboard** | Subscribes to board, contacts, sponsors, events; **“Needs Attention”** (e.g. no logos, Expo TBA, missing board photos); metric cards; **Preview Site** |
+| **BoardEditor** | List/edit/delete members; **AdminModal** with cream **Photo** block (`ImageUpload`, circle preview) and **Member Details** (name, role `<select>`, email, affiliation) |
+| **EventsEditor** | **Four tabs:** Expo, Winter Gala, Monthly Meetings, **Special Events**. Card previews + modals with grouped cream sections (Event Details / Description / Stats / Image for Expo; similar for Gala and Special Event). CRUD for **`meetings`** and **`specialEvents`**; **`toSpecialEvents`** normalizes arrays. **`ReactElement`** for icon maps (no `JSX` namespace). Save persists **`{ expo, gala, meetings, specialEvents }`**. |
+| **MembershipEditor**, **SponsorsEditor**, **ContactsEditor** | Structured fields for respective `site/*` docs |
+| **SiteEditor** | Multi-tab / modal editing for **`site/content`** |
+| **SettingsEditor** | **ToggleCard** UI for section visibility; save toggles batch; change admin password (min 8 chars); logout |
+| **AdminModal** | Body scroll lock; **Escape** closes; footer **Save & Close** |
+| **ImageUpload** | Firebase Storage upload; 5 MB, images only; **`label=""`** when section title is outside the component |
 
 ---
 
-## Security and ops (maintainers)
+## Marketing forms
 
-- Admin is a **shared password** checked in the browser; `adminPassword` is stored in Firestore as plaintext.
-- **`seed.ts`** includes Firebase web credentials in repo—rotate keys if the file is ever public or leaked.
-- Configure **Firestore rules** (writes restricted; reads as needed for public `site/*`) and **Storage rules** for authenticated or trusted upload paths.
+**`Membership`** (home) and **`ContactMain`** — presentational inquiry forms only (no API, email pipe, or server actions).
+
+---
+
+## CSS highlights (`globals.css`)
+
+- **CSS variables** — gold/navy/cream palette, shadows, radii, fonts.
+- **Marketing** — hero, sections, buttons, gallery scroll, page hero, etc.
+- **`.special-events*`** and **`.se-*`** — public Special Events grid and cards.
+- **Admin** — `.admin-layout`, `.sidebar`, `.tabs`, `.card`, `.field-row`, `.btn-add` (including **`.btn-add svg`** explicit size), toggles, login screen, modals, dashboard cards.
+- **Mobile** — large trailing block with `!important` overrides for containers and breakpoints.
+
+---
+
+## Security and ops
+
+- Admin password stored **in Firestore** as plaintext; gate is **client-only**.
+- **Firestore** and **Storage** rules must be configured for production (public read of `site/*` if desired; writes restricted).
+- **`seed.ts`** contains embedded credentials — rotate if exposed.
 
 ---
 
 ## Scripts
 
-| Command | Action |
-|---------|--------|
+| Command | Purpose |
+|---------|---------|
 | `npm run dev` | Dev server |
 | `npm run build` / `npm run start` | Production build / serve |
 | `npm run lint` | ESLint |
-| `npx tsx src/lib/seed.ts` | Seed Firestore (manual) |
+| `npx tsx src/lib/seed.ts` | Seed Firestore |
 
 ---
 
-*Update when routes, schema, or layout providers change.*
+*Update this file when you add routes, Firestore fields, or major UI surfaces.*

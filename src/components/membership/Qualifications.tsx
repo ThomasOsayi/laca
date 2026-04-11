@@ -20,34 +20,10 @@ const defaultQualifications = [
 
 export default function Qualifications() {
   const { membership } = useSiteData();
-  const qualifications = membership?.qualifications?.length > 0 ? membership!.qualifications : defaultQualifications;
-
-  const groups = [
-    {
-      label: "Personal Requirements",
-      items: [qualifications[0] || "At least 21 years of age"],
-    },
-    {
-      label: "Employment Requirements",
-      items: qualifications.slice(1, 5).length > 0
-        ? qualifications.slice(1, 5)
-        : [
-            'Employed by a hotel with the title of "Concierge"',
-            "Work a minimum of 32 hours per week",
-            'At a desk located in the lobby displaying the sign "Concierge"',
-            "Passed the 90-day probationary period in that position",
-          ],
-    },
-    {
-      label: "Ongoing Requirements",
-      items: qualifications.slice(5).length > 0
-        ? qualifications.slice(5)
-        : [
-            "Attend at least 4 LACA meetings per calendar year",
-            "Abide by the LACA Code of Conduct and Bylaws",
-          ],
-    },
-  ];
+  const qualifications: string[] =
+    Array.isArray(membership?.qualifications) && membership.qualifications.length > 0
+      ? membership.qualifications
+      : defaultQualifications;
 
   return (
     <section className="qualifications-section">
@@ -85,19 +61,16 @@ export default function Qualifications() {
         <div className="quals-box fade-in">
           <h4>Eligibility Criteria</h4>
 
-          {groups.map((g) => (
-            <div className="qual-group" key={g.label}>
-              <div className="qual-group-label">{g.label}</div>
-              {g.items.map((item: string, idx: number) => (
-                <div className="qual-item-row" key={idx}>
-                  <div className="qual-ring">
-                    <Check />
-                  </div>
-                  <p>{item}</p>
+          <div className="qual-group">
+            {qualifications.map((item, idx) => (
+              <div className="qual-item-row" key={idx}>
+                <div className="qual-ring">
+                  <Check />
                 </div>
-              ))}
-            </div>
-          ))}
+                <p>{item}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

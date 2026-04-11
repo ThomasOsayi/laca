@@ -31,7 +31,7 @@ export default function Hero() {
           <div className="hero-tagline">{hero?.tagline || "Los Angeles, California"}</div>
           <h1>
             {hero?.titleLine1 || "In Service"}<br />
-            {hero?.titleLine2 ? <>{hero.titleLine2.replace("Friendship", "").trim()} <em>Friendship</em></> : <>Through <em>Friendship</em></>}
+            {hero?.titleLine2 ? <em>{hero.titleLine2}</em> : <>Through <em>Friendship</em></>}
           </h1>
           <p className="hero-description">
             {hero?.description ||

@@ -71,7 +71,7 @@ const defaultMembers = [
 
 export default function Board() {
   const { board } = useSiteData();
-  const members = board?.members?.length > 0 ? board!.members : defaultMembers;
+  const members = Array.isArray(board?.members) && board.members.length > 0 ? board.members : defaultMembers;
 
   return (
     <section className="board">
