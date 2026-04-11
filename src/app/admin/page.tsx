@@ -45,25 +45,13 @@ function NavIcon({ type }: { type: string }) {
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
-  const [forceShow, setForceShow] = useState(false);
   const { data: settings, loading } = useSiteDoc("settings");
 
   useEffect(() => {
     if (sessionStorage.getItem("laca-admin") === "true") {
       setAuthed(true);
     }
-    // Fallback: if Firestore takes >3s, show login anyway with default password
-    const timeout = setTimeout(() => setForceShow(true), 3000);
-    return () => clearTimeout(timeout);
   }, []);
-
-  if (loading && !forceShow) {
-    return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", background: "#F1EEE9", fontFamily: "Outfit, sans-serif", color: "#8B92A0" }}>
-        Loading...
-      </div>
-    );
-  }
 
   if (!authed) {
     return (
