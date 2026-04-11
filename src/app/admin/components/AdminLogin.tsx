@@ -5,15 +5,21 @@ import { useState } from "react";
 interface AdminLoginProps {
   onLogin: () => void;
   correctPassword: string;
+  settingsLoading?: boolean;
 }
 
-export default function AdminLogin({ onLogin, correctPassword }: AdminLoginProps) {
+export default function AdminLogin({ onLogin, correctPassword, settingsLoading }: AdminLoginProps) {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = () => {
+    if (settingsLoading || !correctPassword) {
+      setError(true);
+      setTimeout(() => setError(false), 2500);
+      return;
+    }
     if (password === correctPassword) {
       setLoading(true);
       sessionStorage.setItem("laca-admin", "true");
@@ -23,6 +29,8 @@ export default function AdminLogin({ onLogin, correctPassword }: AdminLoginProps
       setTimeout(() => setError(false), 2500);
     }
   };
+
+  const isDisabled = settingsLoading || loading;
 
   return (
     <div className="admin-login-page">
@@ -66,12 +74,13 @@ export default function AdminLogin({ onLogin, correctPassword }: AdminLoginProps
             <div className="admin-login-password-wrap">
               <input
                 type={showPassword ? "text" : "password"}
-                placeholder="Enter admin password"
+                placeholder={settingsLoading ? "Connecting..." : "Enter admin password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                 className={error ? "error" : ""}
                 autoComplete="current-password"
+                disabled={settingsLoading}
               />
               <div
                 className="admin-login-eye"
@@ -94,12 +103,17 @@ export default function AdminLogin({ onLogin, correctPassword }: AdminLoginProps
 
           {error && (
             <div className="admin-login-error">
-              Incorrect password. Please try again.
+              {settingsLoading ? "Still connecting to the database. Please wait a moment." : "Incorrect password. Please try again."}
             </div>
           )}
 
-          <button className="admin-login-submit" onClick={handleSubmit}>
-            {loading ? "Signing in..." : "Sign In"}
+          <button
+            className="admin-login-submit"
+            onClick={handleSubmit}
+            disabled={isDisabled}
+            style={{ opacity: isDisabled ? 0.6 : 1, cursor: isDisabled ? "not-allowed" : "pointer" }}
+          >
+            {loading ? "Signing in..." : settingsLoading ? "Connecting..." : "Sign In"}
           </button>
 
           <div className="admin-login-divider">
@@ -120,7 +134,7 @@ export default function AdminLogin({ onLogin, correctPassword }: AdminLoginProps
         <div className="admin-login-footer">
           <a href="/" target="_blank">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ width: 14, height: 14 }}>
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h6" />
               <polyline points="15 3 21 3 21 9" />
               <line x1="10" y1="14" x2="21" y2="3" />
             </svg>

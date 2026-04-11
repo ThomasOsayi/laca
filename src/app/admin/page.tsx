@@ -68,8 +68,9 @@ export default function AdminPage() {
   if (!authed) {
     return (
       <AdminLogin
-        correctPassword={settings?.adminPassword || "laca2025admin"}
+        correctPassword={settings?.adminPassword || ""}
         onLogin={() => setAuthed(true)}
+        settingsLoading={loading}
       />
     );
   }
